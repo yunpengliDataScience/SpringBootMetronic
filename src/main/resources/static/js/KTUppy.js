@@ -42,7 +42,7 @@ var KTUppy = function () {
         });
 
         uppyDashboard.use(Dashboard, options);  
-        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8081/TFRUtility/forms/upload' });
+        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8081/SpringBootMetronic/forms/upload' });
         uppyDashboard.use(GoogleDrive, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });
         uppyDashboard.use(Dropbox, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });
         uppyDashboard.use(Instagram, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });
@@ -78,7 +78,7 @@ var KTUppy = function () {
         });
 
         uppyDashboard.use(Dashboard, options);  
-        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8081/TFRUtility/forms/upload' });
+        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8082/SpringBootMetronic/forms/upload' });
     }
 
     var initUppy3 = function(){
@@ -101,7 +101,7 @@ var KTUppy = function () {
             hideAfterFinish: false 
         });      
         uppyDrag.use(Informer, { target: id + ' .kt-uppy__informer'  });
-        uppyDrag.use(Tus, { endpoint: 'http://localhost:8081/TFRUtility/forms/upload' });
+        uppyDrag.use(Tus, { endpoint: 'http://localhost:8082/SpringBootMetronic/forms/upload' });
 
         uppyDrag.on('complete', function(file) {
             var imagePreview = "";
@@ -149,7 +149,7 @@ var KTUppy = function () {
         uppyDrag.use(Uppy.DragDrop, { target: id + ' .kt-uppy__drag' });  
         uppyDrag.use(ProgressBar, { target: id + ' .kt-uppy__progress' });      
         uppyDrag.use(Informer, { target: id + ' .kt-uppy__informer'  });
-        uppyDrag.use(Tus, { endpoint: 'http://localhost:8081/TFRUtility/forms/upload' });
+        uppyDrag.use(Tus, { endpoint: 'http://localhost:8082/SpringBootMetronic/forms/upload' });
 
         uppyDrag.on('complete', function(file) {
             var imagePreview = "";
@@ -287,7 +287,7 @@ var KTUppy = function () {
         });
 
         uppyDashboard.use(Dashboard, options);  
-        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8081/TFRUtility/forms/upload' });
+        uppyDashboard.use(Tus, { endpoint: 'http://localhost:8082/SpringBootMetronic/forms/upload' });
         uppyDashboard.use(GoogleDrive, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });
         uppyDashboard.use(Dropbox, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });
         uppyDashboard.use(Instagram, { target: Dashboard, companionUrl: 'https://companion.uppy.io' });

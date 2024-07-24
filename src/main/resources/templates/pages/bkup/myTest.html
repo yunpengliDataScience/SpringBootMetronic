@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	
+	<!-- Select the block having id as 'myContent' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
+		 defined in pageTemplate.html under fragments folder. The content should show up as the main content. 
+		 Since all styles, navigation, and page layout have been defined in the pageTemplate fragment, we only need to 
+		 focus on the main content construction. 
+	-->
+	<th:block th:replace="fragments/pageTemplate :: pageTemplate(title='My Test Page', pageId='myTest', pageSpecificCSSLinks=~{:: link}, pageSpecificScripts=~{::script}, content=~{:: #myContent})">
+		
+		<link rel="stylesheet" type="text/css" th:href="@{/css/myStyle.css}" />
+		
+		<link rel="stylesheet" type="text/css" th:href="@{/css/myStyle2.css}" />
+		
+		<div id="myContent" class="mytext">
+			This is the test page.
+		</div>
+		
+		<script id="myScript">
+			$(document).ready(function() {alert('hi');});
+		</script>
+	</th:block>
+</html>

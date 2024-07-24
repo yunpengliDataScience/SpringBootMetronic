@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/header :: headerfiles(title='File Upload', pageId='fileUpload')"/>
+        
+    <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
+
+		<!-- begin:: classification banner -->
+		<div th:replace="fragments/header :: classificationBanner"/>
+		<!-- end:: classification banner -->
+		
+		<!-- begin:: Header Mobile -->
+		<div th:replace="fragments/header :: headerMobile"/>
+		<!-- end:: Header Mobile -->
+
+		<!-- begin:: page grid-->	
+		<div class="kt-grid kt-grid--hor kt-grid--root">
+			<!-- begin:: main page grid item-->
+			<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+				
+				<!-- begin:: aside -->
+				<div th:replace="fragments/aside :: aside('fileUpload')"></div>
+				<!-- end:: aside -->
+				
+				<!-- begin:: main content grid item-->
+				<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+					<!--begin::kt-container-->
+					<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+
+						<!--begion::row-->
+						<div class="row">
+							
+							<!--begin::column-->
+							<div class="col-md-12">
+								
+								<!--begin::portlet-->
+								<div class="kt-portlet">
+									
+									<div class="kt-portlet__head">
+										<div class="kt-portlet__head-label">
+											<h3 class="kt-portlet__head-title">
+												File Upload
+											</h3>
+										</div>
+									</div>
+	
+									<!--begin::form-->
+									<form class="kt-form" action="#" th:action="@{/forms/upload}" method="post" enctype="multipart/form-data">
+										
+										<div class="kt-portlet__body">
+											
+											<!-- Display success message if present -->
+										    <div th:if="${successMessage}" class="alert alert-solid-success alert-bold" role="alert">
+										        <div th:text="${successMessage}" class="alert-text"></div>
+										        <div class="alert-close">
+													<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+														<span aria-hidden="true"><i class="la la-close"></i></span>
+													</button>
+												</div>
+										    </div>
+										    <div th:if="${errorMessage}" class="alert alert-solid-danger alert-bold" role="alert">
+										        <div th:text="${errorMessage}" class="alert-text"></div>
+										        <div class="alert-close">
+													<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+														<span aria-hidden="true"><i class="la la-close"></i></span>
+													</button>
+												</div>
+										    </div>
+										    <div th:if="${warnMessage}" class="alert alert-solid-warning alert-bold" role="alert">
+										        <div th:text="${warnMessage}" class="alert-text"></div>
+										        <div class="alert-close">
+													<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+														<span aria-hidden="true"><i class="la la-close"></i></span>
+													</button>
+												</div>
+										    </div>
+										    
+											<div class="form-group file-input">
+												<label for="file" class="btn btn-primary">Select a file to upload</label>
+                                				<input type="file" class="input-file" name="file" id="file" onchange="updateFileName(this)"/>
+                                				<span id="file-name">No file chosen</span>
+											</div>
+											
+										</div>
+										<div class="kt-portlet__foot">
+											<div class="kt-form__actions">
+												<input type="submit" class="btn btn-primary" value="Upload"/>
+											</div>
+										</div>
+									</form>
+									<!--end::form-->
+								</div>
+								<!--end::portlet-->
+							</div>
+							<!--end::column-->
+							
+						</div>
+						<!--end::row-->
+					
+					</div>
+					<!--end::kt-container-->
+				</div>
+				<!-- end:: main content grid item-->	
+				
+			</div>
+			<!-- end:: main page grid item-->
+		</div>
+		<!-- end:: page grid-->
+		
+		<div th:replace="fragments/header :: scripts(pageId='fileUpload')"/>
+		<script>
+			function updateFileName(input) {
+			    var fileName = input.files[0].name;
+			    var fileNameDisplay = document.getElementById('file-name');
+			    fileNameDisplay.textContent = fileName;
+			}
+		</script>
+	</body>
+</html>

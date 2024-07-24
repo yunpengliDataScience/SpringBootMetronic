@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<!-- Fragment definition -->
+	<th:block th:fragment="pageTemplate(title, pageId, pageSpecificCSSLinks, pageSpecificScripts, content)">
+	    
+	    <!-- Include header files -->
+	    <head th:replace="fragments/include :: headerfiles(${title}, ${pageId}, ${pageSpecificCSSLinks})"/>
+	        
+	    <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
+	
+			<!-- begin:: classification banner -->
+			<!-- Include the content defined in the fragment named 'classificationBanner' of include.html under fragments folder -->
+			<div th:replace="fragments/include :: classificationBanner"/>
+			<!-- end:: classification banner -->
+			
+			<!-- begin:: Header Mobile -->
+			<!-- Include the content defined in the fragment named 'headerMobile' of include.html under fragments folder -->
+			<div th:replace="fragments/include :: headerMobile"/>
+			<!-- end:: Header Mobile -->
+	
+			<!-- begin:: page grid-->	
+			<div class="kt-grid kt-grid--hor kt-grid--root">
+				<!-- begin:: main page grid item-->
+				<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+					
+					<!-- begin:: aside -->
+					<!-- Include the content defined in the fragment named 'aside' of aside.html under fragments folder and pass in the pageId as the fragment parameter -->
+					<div th:replace="fragments/aside :: aside(${pageId})"></div>
+					<!-- end:: aside -->
+					
+					<!-- begin:: main content grid item-->
+					<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+						<!--begin::kt-container-->
+						<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+							 <!-- Include the passed-in content from the fragment parameter. 
+							 	  Note: th:replace means "replace or include content right HERE".
+							 	  		It can use the content defined in another fragement or the content passed from a parameter of the enclosed fragment. 
+							 	  This is the main content area.
+							 -->
+							 <div th:replace="${content}"/>
+						</div>
+						<!--end::kt-container-->
+					</div>
+					<!-- end:: main content grid item-->	
+					
+				</div>
+				<!-- end:: main page grid item-->
+			</div>
+			<!-- end:: page grid-->
+			
+			<div th:replace="fragments/include :: scripts(pageId=${pageId}, pageSpecificScripts=${pageSpecificScripts})"/>
+		</body>
+		
+	</th:block>
+</html>

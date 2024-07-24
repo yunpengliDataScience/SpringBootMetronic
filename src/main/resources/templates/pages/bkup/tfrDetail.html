@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/header :: headerfiles(title='Page Template', pageId='tfrDetail')"/>
+        
+    <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
+
+		<!-- begin:: classification banner -->
+		<div th:replace="fragments/header :: classificationBanner"/>
+		<!-- end:: classification banner -->
+		
+		<!-- begin:: Header Mobile -->
+		<div th:replace="fragments/header :: headerMobile"/>
+		<!-- end:: Header Mobile -->
+
+		<!-- begin:: page grid-->	
+		<div class="kt-grid kt-grid--hor kt-grid--root">
+			<!-- begin:: main page grid item-->
+			<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+				
+				<!-- begin:: aside -->
+				<div th:replace="fragments/aside :: aside('tfrDetail')" th:remove="tag"></div>
+				<!-- end:: aside -->
+				
+				<!-- begin:: main content grid item-->
+				<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+					<!--begin::kt-container-->
+					<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
+						[TFR Detail]
+					</div>
+					<!--end::kt-container-->
+				</div>
+				<!-- end:: main content grid item-->	
+				
+			</div>
+			<!-- end:: main page grid item-->
+		</div>
+		<!-- end:: page grid-->
+		
+		<div th:replace="fragments/header :: scripts(pageId='tfrDetail')"/>
+	</body>
+</html>

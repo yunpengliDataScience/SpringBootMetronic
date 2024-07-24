@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	
+	<!-- Select the block having id as 'tfrDetail' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
+		 defined in pageTemplate.html under fragments folder. The content should show up as the main content. 
+		 Since all styles, navigation, and page layout have been defined in the pageTemplate fragment, we only need to 
+		 focus on the main content construction. In addtion, page specific css links and scripts can be added. 
+	-->
+	<th:block th:replace="fragments/pageTemplate :: pageTemplate(title='TFR Detail', pageId='tfrDetail', pageSpecificCSSLinks=~{}, pageSpecificScripts=~{}, content=~{:: #tfrDetail})">
+		
+		<th:block id="tfrDetail">
+			TFR Detail
+		</th:block>
+		
+	</th:block>
+</html>

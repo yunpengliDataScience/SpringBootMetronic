@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="headerfiles(title, pageId, pageSpecificCSSLinks)"> <!-- Note: pageId is the active aside menu link id, and it should match the current rendered page name.-->
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title><th:block th:text="${title}"/></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- ----------------------------------------------------------------- -->
+	
+	<!--begin::Global Theme Styles(used by all pages) -->
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/plugins/global/plugins.bundle.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/css/style.bundle.css}" />
+	<!--end::Global Theme Styles -->
+
+	<!--begin::Layout Skins(used by all pages) -->
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/css/skins/header/base/light.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/css/skins/header/menu/light.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/css/skins/brand/dark.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/metronic/dist/assets/css/skins/aside/dark.css}" />
+	<!--end::Layout Skins -->
+	
+	<th:block th:replace="${pageSpecificCSSLinks}"></th:block>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+	
+	<link rel="shortcut icon" th:href="@{/images/navy.ico}" />
+	
+</head>
+
+<body>
+	<!-- begin:: Header Mobile -->
+	<!-- Header Mobile is used to allow aside navigation to shrink into a top bar when page is shrunk -->
+	<div th:fragment="headerMobile" id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
+		<div class="kt-header-mobile__logo">
+			<a href="#">
+				<!--
+				<img alt="Logo" th:src="@{/metronic/dist/assets/media/logos/logo-light.png}" />
+				-->
+				<span class="font-weight-bold">TFR Utility</span>
+			</a>
+		</div>
+		<div class="kt-header-mobile__toolbar">
+			<button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"><span></span></button>
+			<button class="kt-header-mobile__toggler" id="kt_header_mobile_toggler"><span></span></button>
+			<button class="kt-header-mobile__topbar-toggler" id="kt_header_mobile_topbar_toggler"><i class="flaticon-more"></i></button>
+		</div>
+	</div>
+	<!-- end:: Header Mobile -->
+	
+	<!-- Classification Banner -->
+	<div th:fragment="classificationBanner" th:remove="tag">
+		<div class="classificationBanner" id="bannerTop">
+			<h4>CUI</h4>
+		</div>
+		<div class="classificationBanner" id="bannerBottom">
+			<h4>CUI</h4>
+		</div>
+	</div>
+	
+	<!-- Javascripts -->
+	<div th:fragment="scripts(pageId, pageSpecificScripts)" th:remove="tag">
+		<!-- begin::Global Config(global config for global JS sciprts) -->
+		<script>
+			var KTAppOptions = {
+				"colors": {
+					"state": {
+						"brand": "#5d78ff",
+						"dark": "#282a3c",
+						"light": "#ffffff",
+						"primary": "#5867dd",
+						"success": "#34bfa3",
+						"info": "#36a3f7",
+						"warning": "#ffb822",
+						"danger": "#fd3995"
+					},
+					"base": {
+						"label": [
+							"#c5cbe3",
+							"#a1a8c3",
+							"#3d4465",
+							"#3e4466"
+						],
+						"shape": [
+							"#f0f3ff",
+							"#d9dffa",
+							"#afb4d4",
+							"#646c9a"
+						]
+					}
+				}
+			};
+		</script>
+		<!-- end::Global Config -->
+	
+		<!--begin::Global Theme Bundle(used by all pages) -->
+		<script type="text/javascript" th:src="@{/metronic/dist/assets/plugins/global/plugins.bundle.js}"></script>
+		<script type="text/javascript" th:src="@{/metronic/dist/assets/js/scripts.bundle.js}"></script>
+		<!--end::Global Theme Bundle -->
+	
+		<!--begin::Page Scripts -->
+		<th:block th:replace="${pageSpecificScripts}"></th:block>
+		<!--end::Page Scripts -->
+		
+		<!-- ----------------------------------------------------------------- -->
+	
+		<script th:inline="javascript">
+			
+			//pageId is the active aside menu link id, and it should match the current rendered page name.
+		    var pageId = /*[[${pageId}]]*/ ''; 
+		    //alert(pageId); 
+		</script> 
+		
+		<script>
+			
+			// Function to retrieve all ancestor <li> tags
+	        function getAllAncestorLIs(element) {
+	            var ancestorLIs = [];
+	            var currentElement = element.parent();
+	            
+	            console.log(currentElement.prop("tagName"));
+	            
+	            while (currentElement.parent().length > 0 ) {
+					
+					console.log(currentElement.prop("tagName"));
+					
+					if(currentElement.prop("tagName")=='LI'){
+						ancestorLIs.push(currentElement);
+					}
+	                
+	                currentElement = currentElement.parent();
+	            }
+	            return ancestorLIs;
+	        }
+	            
+			$(document).ready(function() {
+				/*
+				The following logic is to use javascript to modify styles of the parent menu links (wraped in <li>) of a clicked link to make them open and expanded.
+				*/
+				
+	        	console.log("Thymeleaf object value: " + pageId);
+	       
+	            // Retrieve all ancestor <li> tags of an element
+	            var currentLiElement = $('#'+pageId);
+	            
+	            var ancestorLIs = getAllAncestorLIs(currentLiElement);
+	            console.log(ancestorLIs);
+				
+				//Make current li element active.
+				currentLiElement.addClass('kt-menu__item--active');
+	           
+	           //Make all ancestor Li elements expanded. So the aside menu links will show the open path to the active link.
+	           ancestorLIs.forEach(function(li) {
+				   
+				   li.addClass('kt-menu__item--open kt-menu__item--here');
+	               
+	            });
+	            
+	        });
+	        
+	        
+		</script>
+	</div>
+</body>
+
+</html>

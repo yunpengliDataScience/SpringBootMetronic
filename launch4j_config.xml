@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>console</headerType>
+  <jar>C:\Projects\SpringBootMetronic\target\SpringBootMetronic.jar</jar>
+  <outfile>C:\Temp\SpringBootStandAlone\SpringBootMetronic.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Projects\SpringBootMetronic\src\main\resources\navy.ico</icon>
+  <jre>
+    <path>jre</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion>1.4</minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+</launch4jConfig>

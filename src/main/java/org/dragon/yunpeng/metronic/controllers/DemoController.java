@@ -15,9 +15,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.dragon.yunpeng.metronic.entities.Category;
 import org.dragon.yunpeng.metronic.entities.Form;
+import org.dragon.yunpeng.metronic.entities.SubCategory;
 import org.dragon.yunpeng.metronic.pojos.FormListDto;
 import org.dragon.yunpeng.metronic.pojos.XMLFile;
+import org.dragon.yunpeng.metronic.repositories.CategoryRepository;
+import org.dragon.yunpeng.metronic.repositories.SubCategoryRepository;
 import org.dragon.yunpeng.metronic.services.IFileService;
 import org.dragon.yunpeng.metronic.services.IFormService;
 import org.slf4j.Logger;
@@ -53,6 +57,12 @@ public class DemoController {
 
 	@Autowired
 	private IFileService fileService;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private SubCategoryRepository subCategoryRepository;
 
 	@GetMapping("/")
 	public String redirect() {
@@ -244,7 +254,7 @@ public class DemoController {
 		}
 		return "pages/fileUpload";
 	}
-	
+
 	@PostMapping("/forms/uploadFromModal")
 	public String uploadFileFromModal(@RequestParam("file") MultipartFile file, Model model) {
 
@@ -265,8 +275,8 @@ public class DemoController {
 				Path path = Paths.get(UPLOAD_FOLDER + fileName);
 				// Save the file
 				Files.write(path, file.getBytes());
-				
-				//TODO
+
+				// TODO
 				Form newForm = formService.unmarshallXML(file.getInputStream());
 				if (newForm != null) {
 					formService.saveForm(newForm);
@@ -288,7 +298,7 @@ public class DemoController {
 		}
 		return "pages/modalPage";
 	}
-	
+
 	@PostMapping("/forms/importFromModal")
 	public String importFromModal(@RequestParam("file") MultipartFile file, Model model) {
 
@@ -303,8 +313,7 @@ public class DemoController {
 
 			try {
 
-				
-				//TODO
+				// TODO
 				Form newForm = formService.unmarshallXML(file.getInputStream());
 				if (newForm != null) {
 					formService.saveForm(newForm);
@@ -324,7 +333,7 @@ public class DemoController {
 
 			model.addAttribute("warnMessage", "No file received.");
 		}
-		
+
 		return "redirect:/forms";
 	}
 
@@ -339,6 +348,12 @@ public class DemoController {
 		Form form = new Form();
 		form.setCodes(codes);
 		form.setItems(items);
+
+		List<Category> categories = categoryRepository.findAll();
+		model.addAttribute("categories", categories);
+		
+		List<SubCategory> subCategories = subCategoryRepository.findAll();
+		model.addAttribute("subCategories", subCategories);
 
 		model.addAttribute("form", form);
 		return "pages/formDetail";
@@ -374,6 +389,13 @@ public class DemoController {
 		form.setCodes(codes);
 
 		model.addAttribute("form", form);
+		
+		List<Category> categories = categoryRepository.findAll();
+		model.addAttribute("categories", categories);
+		
+		List<SubCategory> subCategories = subCategoryRepository.findAll();
+		model.addAttribute("subCategories", subCategories);
+		
 		return "pages/formDetail";
 	}
 
@@ -382,7 +404,7 @@ public class DemoController {
 		formService.deleteForm(id);
 		return "redirect:/forms";
 	}
-	
+
 	@GetMapping("/forms/delete2/{id}")
 	public String deleteForm2(@PathVariable Long id) {
 		formService.deleteForm(id);
@@ -417,7 +439,7 @@ public class DemoController {
 
 		return "pages/modalPage";
 	}
-	
+
 	@GetMapping("/forms/samplePage")
 	public String samplePage(Model model, HttpServletRequest request) {
 

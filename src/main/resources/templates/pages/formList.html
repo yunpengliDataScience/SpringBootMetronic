@@ -45,6 +45,8 @@
 											<tr>
 												<th>Form Name</th>
 	                                    		<th>Code</th>
+	                                    		<th>Category</th>
+	                                    		<th>Subcategory</th>
 	                                    		<th>Field 1</th>
 	                                    		<th>Field 2</th>
 	                                    		<th>Edit</th>
@@ -55,6 +57,8 @@
 			                                <tr th:each="form : ${forms}">
 			                                    <td th:text="${form.name}"></td>
 			                                    <td th:text="${form.code}"></td>
+			                                    <td th:text="${form.category?.name}"></td>
+			                                    <td th:text="${form.subCategory?.name}"></td>
 			                                    <td th:text="${form.field1}"></td>
 			                                    <td th:text="${form.field2}"></td>
 			                                    <td><a th:href="@{/forms/edit/{id}(id=${form.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit ml-2"></i></a></td>

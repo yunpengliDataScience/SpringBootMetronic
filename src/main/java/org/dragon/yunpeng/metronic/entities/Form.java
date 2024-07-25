@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
@@ -15,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "form")
-@XmlType(propOrder = { "name", "code", "field1", "field2", "items", "textArea" })
+//@XmlType(propOrder = { "name", "code", "field1", "field2", "items", "textArea" })
 @Entity
 @Table(name = "FORM")
 public class Form implements Serializable {
@@ -31,6 +32,14 @@ public class Form implements Serializable {
 	private String field2;
 
 	private String code;
+	
+	@XmlTransient
+	@ManyToOne
+	private Category category;
+	
+	@XmlTransient
+	@ManyToOne
+	private SubCategory subCategory;
 
 	private String textArea;
 
@@ -84,6 +93,22 @@ public class Form implements Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public SubCategory getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(SubCategory subCategory) {
+		this.subCategory = subCategory;
 	}
 
 	@XmlTransient

@@ -1,5 +1,5 @@
 To access application:
-http://localhost:8082/SpringBootMetronic/forms
+http://localhost:8082/SpringBootMetronic
 
 To add run time argument, such as a new server port number, for the .exe create a .ini fie:
 The ini file's name must correspond to the exe file (myapp.exe: myapp.l4j.ini)
@@ -10,7 +10,7 @@ Windows command line to display Java processes:
 Windows command line to kill a Java process:
 > taskkill /F /PID <ProcessID>
 
-Use http://localhost:8081/SpringBootMetronic/h2-console to access H2 console in browser:
+Use http://localhost:8082/SpringBootMetronic/h2-console to access H2 console in browser:
 Driver Class: org.h2.Driver
 JDBC URL: jdbc:h2:file:./SpringBootMetronic_Database
 User Name: sa
@@ -29,17 +29,17 @@ https://www.baeldung.com/spring-boot-running-port
 
 ----------------------------------------------------------------------
 Access page template:
-http://localhost:8081/SpringBootMetronic/pageTemplate
+http://localhost:8082/SpringBootMetronic/pageTemplate
 
 
 Access Metronic demo:
 http://localhost:8082/SpringBootMetronic/metronic/dist/index.html
 
 Access Bootstrap templates:
-http://localhost:8081/SpringBootMetronic/BootstrapTemplates/Chap11_MyCompany_Single_Page.html
-http://localhost:8081/SpringBootMetronic/BootstrapTemplates/Chap12_Company_Multiple_Pages/index.html
-http://localhost:8081/SpringBootMetronic/BootstrapTemplates/Chap13_Portfolio_Multiple_Pages/index.html
-http://localhost:8081/SpringBootMetronic/BootstrapTemplates/Chap14_Parallax_Single_Page/index.html
+http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap11_MyCompany_Single_Page.html
+http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap12_Company_Multiple_Pages/index.html
+http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap13_Portfolio_Multiple_Pages/index.html
+http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap14_Parallax_Single_Page/index.html
 
 ------------------------------------------------------------------------
 Dynamic list form binding: (See dynamicFormEditList.html)

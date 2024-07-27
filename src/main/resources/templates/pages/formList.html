@@ -47,8 +47,10 @@
 	                                    		<th>Code</th>
 	                                    		<th>Category</th>
 	                                    		<th>Subcategory</th>
+	                                    		<th>Items</th>
 	                                    		<th>Field 1</th>
 	                                    		<th>Field 2</th>
+	                                    		<th>Text Area</th>
 	                                    		<th>Edit</th>
 	                                    		<th>Delete</th>
 											</tr>
@@ -59,8 +61,10 @@
 			                                    <td th:text="${form.code}"></td>
 			                                    <td th:text="${form.category?.name}"></td>
 			                                    <td th:text="${form.subCategory?.name}"></td>
+			                                    <td th:text="${form.items}"></td>
 			                                    <td th:text="${form.field1}"></td>
 			                                    <td th:text="${form.field2}"></td>
+			                                    <td th:text="${form.textArea}"></td>
 			                                    <td><a th:href="@{/forms/edit/{id}(id=${form.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit ml-2"></i></a></td>
 			                                    <td><a th:href="@{/forms/delete/{id}(id=${form.id})}" class="btn btn-danger btn-sm"><i class="fas fa-times ml-2"></i></a></td>
 			                                </tr>

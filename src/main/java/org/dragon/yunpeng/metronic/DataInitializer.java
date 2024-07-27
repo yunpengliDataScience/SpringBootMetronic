@@ -22,10 +22,15 @@ public class DataInitializer implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		try (Connection connection = dataSource.getConnection();
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS count FROM CATEGORY")) {
+				Statement stmt1 = connection.createStatement();
+				ResultSet rsCategory = stmt1.executeQuery("SELECT COUNT(*) AS count FROM CATEGORY");
+				
+				Statement stmt2 = connection.createStatement();
+				ResultSet rsItem = stmt2.executeQuery("SELECT COUNT(*) AS count FROM ITEM");
+				) {
 
-			if (rs.next() && rs.getInt("count") == 0) {
+			if (rsCategory.next() && rsCategory.getInt("count") == 0
+					&& rsItem.next() && rsItem.getInt("count") == 0) {
 				ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(false, false,
 						"UTF-8", new ClassPathResource("data-h2.sql"));
 

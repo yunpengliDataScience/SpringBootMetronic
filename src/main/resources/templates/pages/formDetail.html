@@ -80,9 +80,9 @@
                     				<span th:if="${#fields.hasErrors('field2')}" th:errors="*{field2}" class="text-danger"></span>
 								</div>
 								<div class="form-group">
-									<label for="exampleSelect2">Multiple Select</label>
-									<select multiple="multiple" class="form-control" id="exampleSelect2">
-										<option th:each="item : *{items}" th:value="${item}" th:text="${item}"></option>
+									<label for="items">Multiple Select Items</label>
+									<select multiple="multiple" th:field="*{items}" class="form-control" id="items">
+										<option th:each="item : ${itemList}" th:value="${item.id}" th:text="${item.name}"></option>
 									</select>
 								</div>
 								<div class="form-group form-group-last">

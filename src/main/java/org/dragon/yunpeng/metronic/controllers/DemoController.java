@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +16,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.dragon.yunpeng.metronic.entities.Category;
 import org.dragon.yunpeng.metronic.entities.Form;
+import org.dragon.yunpeng.metronic.entities.Item;
 import org.dragon.yunpeng.metronic.entities.SubCategory;
 import org.dragon.yunpeng.metronic.pojos.FormListDto;
 import org.dragon.yunpeng.metronic.pojos.XMLFile;
 import org.dragon.yunpeng.metronic.repositories.CategoryRepository;
+import org.dragon.yunpeng.metronic.repositories.ItemRepository;
 import org.dragon.yunpeng.metronic.repositories.SubCategoryRepository;
 import org.dragon.yunpeng.metronic.services.IFileService;
 import org.dragon.yunpeng.metronic.services.IFormService;
@@ -63,6 +64,9 @@ public class DemoController {
 	
 	@Autowired
 	private SubCategoryRepository subCategoryRepository;
+	
+	@Autowired
+	private ItemRepository itemRepository;
 
 	@GetMapping("/")
 	public String redirect() {
@@ -342,12 +346,11 @@ public class DemoController {
 
 		List<String> codes = formService.readCodeFromFile();
 
-		String[] itemStrs = { "Item1", "Item2", "Item3", "Item4", "Item5" };
-		List<String> items = Arrays.asList(itemStrs);
-
 		Form form = new Form();
 		form.setCodes(codes);
-		form.setItems(items);
+		
+		List<Item> itemList = itemRepository.findAll();
+		model.addAttribute("itemList", itemList);
 
 		List<Category> categories = categoryRepository.findAll();
 		model.addAttribute("categories", categories);
@@ -395,6 +398,9 @@ public class DemoController {
 		
 		List<SubCategory> subCategories = subCategoryRepository.findAll();
 		model.addAttribute("subCategories", subCategories);
+		
+		List<Item> itemList = itemRepository.findAll();
+		model.addAttribute("itemList", itemList);
 		
 		return "pages/formDetail";
 	}

@@ -2,11 +2,15 @@ package org.dragon.yunpeng.metronic.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -32,24 +36,26 @@ public class Form implements Serializable {
 	private String field2;
 
 	private String code;
-	
+
 	@XmlTransient
 	@ManyToOne
 	private Category category;
-	
+
 	@XmlTransient
 	@ManyToOne
 	private SubCategory subCategory;
 
 	private String textArea;
 
-	@Transient
-	private List<String> items;
+	@XmlTransient
+	@ManyToMany
+	@JoinTable(name = "FORM_ITEM", joinColumns = @JoinColumn(name = "FORM_ID"), inverseJoinColumns = @JoinColumn(name = "ITEM_ID"))
+	private Set<Item> items;
 
 	@Transient
 	private List<String> codes;
 
-	//@XmlElement
+	// @XmlElement
 	@XmlTransient
 	public long getId() {
 		return id;
@@ -129,11 +135,11 @@ public class Form implements Serializable {
 		this.textArea = textArea;
 	}
 
-	public List<String> getItems() {
+	public Set<Item> getItems() {
 		return items;
 	}
 
-	public void setItems(List<String> items) {
+	public void setItems(Set<Item> items) {
 		this.items = items;
 	}
 

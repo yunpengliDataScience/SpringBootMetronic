@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Projects\SpringBootMetronic\src\main\resources\navy.ico</icon>
+  <icon>C:\Projects\SpringBootMetronic\src\main\resources\dragon.ico</icon>
   <jre>
     <path>jre</path>
     <requiresJdk>false</requiresJdk>

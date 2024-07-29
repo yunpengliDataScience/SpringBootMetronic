@@ -182,7 +182,7 @@
 						        <internalName>${project.name}</internalName>
 						        <originalFilename>${project.build.finalName}.exe</originalFilename>
 						    </versionInfo>
-						    <icon>${project.basedir}/src/main/resources/navy.ico</icon> <!-- Path to your icon file -->
+						    <icon>${project.basedir}/src/main/resources/dragon.ico</icon> <!-- Path to your icon file -->
 						</configuration>
 	                </execution>
 	            </executions>

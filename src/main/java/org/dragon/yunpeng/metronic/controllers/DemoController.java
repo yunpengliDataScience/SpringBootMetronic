@@ -61,10 +61,10 @@ public class DemoController {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
 	@Autowired
 	private SubCategoryRepository subCategoryRepository;
-	
+
 	@Autowired
 	private ItemRepository itemRepository;
 
@@ -348,15 +348,18 @@ public class DemoController {
 
 		Form form = new Form();
 		form.setCodes(codes);
-		
+
 		List<Item> itemList = itemRepository.findAll();
 		model.addAttribute("itemList", itemList);
 
 		List<Category> categories = categoryRepository.findAll();
 		model.addAttribute("categories", categories);
-		
+
 		List<SubCategory> subCategories = subCategoryRepository.findAll();
 		model.addAttribute("subCategories", subCategories);
+
+		List<String> words = formService.readWordsFromFile();
+		model.addAttribute("words", words);
 
 		model.addAttribute("form", form);
 		return "pages/formDetail";
@@ -392,16 +395,19 @@ public class DemoController {
 		form.setCodes(codes);
 
 		model.addAttribute("form", form);
-		
+
 		List<Category> categories = categoryRepository.findAll();
 		model.addAttribute("categories", categories);
-		
+
 		List<SubCategory> subCategories = subCategoryRepository.findAll();
 		model.addAttribute("subCategories", subCategories);
-		
+
 		List<Item> itemList = itemRepository.findAll();
 		model.addAttribute("itemList", itemList);
-		
+
+		List<String> words = formService.readWordsFromFile();
+		model.addAttribute("words", words);
+
 		return "pages/formDetail";
 	}
 

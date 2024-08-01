@@ -45,6 +45,7 @@
 											<tr>
 												<th>Form Name</th>
 	                                    		<th>Code</th>
+	                                    		<th>Word</th>
 	                                    		<th>Category</th>
 	                                    		<th>Subcategory</th>
 	                                    		<th>Items</th>
@@ -59,6 +60,7 @@
 			                                <tr th:each="form : ${forms}">
 			                                    <td th:text="${form.name}"></td>
 			                                    <td th:text="${form.code}"></td>
+			                                    <td th:text="${form.word}"></td>
 			                                    <td th:text="${form.category?.name}"></td>
 			                                    <td th:text="${form.subCategory?.name}"></td>
 			                                    <td th:text="${form.items}"></td>

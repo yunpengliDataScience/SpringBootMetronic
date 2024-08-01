@@ -30,16 +30,33 @@ public class FormServiceImp implements IFormService {
 	@Override
 	public List<String> readCodeFromFile() {
 
-		List<String> codes = new ArrayList<String>();
-
 		String fileName = "code.txt";
+
+		List<String> codes = readTextLinesFromFile(fileName);
+
+		return codes;
+	}
+
+	@Override
+	public List<String> readWordsFromFile() {
+
+		String fileName = "words.txt";
+
+		List<String> words = readTextLinesFromFile(fileName);
+
+		return words;
+	}
+
+	private List<String> readTextLinesFromFile(String fileName) {
+
+		List<String> codes = new ArrayList<String>();
 
 		// Get the current working directory of the java process
 		String workingDirectory = System.getProperty("user.dir");
 		System.out.println(workingDirectory);
 
 		// Construct the absolute path to the file
-		String filePath = workingDirectory + File.separator + fileName;
+		String filePath = workingDirectory + File.separator + "textData" + File.separator + fileName;
 
 		// Read the file
 		try {

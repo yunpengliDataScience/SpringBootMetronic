@@ -37,6 +37,8 @@ public class Form implements Serializable {
 
 	private String code;
 
+	private String word;
+
 	@XmlTransient
 	@ManyToOne
 	private Category category;
@@ -143,9 +145,19 @@ public class Form implements Serializable {
 		this.items = items;
 	}
 
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
+	}
+
 	@Override
 	public String toString() {
 		return "Form [id=" + id + ", name=" + name + ", field1=" + field1 + ", field2=" + field2 + ", code=" + code
-				+ ", textArea=" + textArea + ", collection=" + items + ", codes=" + codes + "]";
+				+ ", word=" + word + ", category=" + category + ", subCategory=" + subCategory + ", textArea="
+				+ textArea + ", items=" + items + ", codes=" + codes + "]";
 	}
+
 }

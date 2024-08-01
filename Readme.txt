@@ -45,3 +45,6 @@ http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap14_Parallax_Sing
 Dynamic list form binding: (See dynamicFormEditList.html)
 https://www.baeldung.com/thymeleaf-list
 
+Select2:
+https://select2.org/
+

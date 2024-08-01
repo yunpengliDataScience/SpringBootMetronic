@@ -54,6 +54,14 @@
 								</div>
 								
 								<div class="form-group">
+									<label for="words" class="col-form-label">Word Selection</label>
+								    <select id="words" name="wordOptions" class="form-control" th:field="*{word}">
+								        <option value="" disabled selected>Select a word</option> <!-- Default option -->
+								        <option th:each="word : ${words}" th:value="${word}" th:text="${word}" ></option>
+								    </select>
+								</div>
+								
+								<div class="form-group">
 									<label for="category" class="col-form-label">Category</label>
 								    <select id="category" name="codeOptions" class="form-control" th:field="*{category}">
 								        <option value="" selected>Select a Category</option> <!-- Default option -->
@@ -110,6 +118,9 @@
 		<script>
 			$(document).ready(function() {
 				console.log('Script is added.');
+				//Use Select2
+				$('#words').select2();
+				
 				});
 				
 			 $(document).ready(function() {

@@ -23,4 +23,6 @@ public interface IFormService {
 
 	Form unmarshallXML(InputStream xmlInputStream);
 
+	List<String> readWordsFromFile();
+
 }

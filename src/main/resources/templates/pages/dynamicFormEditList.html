@@ -50,6 +50,10 @@
 				                                <tr th:each="form, itemStat : *{forms}">
 													<!-- hidden fields are used to preserve values to prevent data lose -->
 													<input type="hidden" th:field="*{forms[__${itemStat.index}__].id}" />
+													<input type="hidden" th:field="*{forms[__${itemStat.index}__].word}" />
+													<input type="hidden" th:field="*{forms[__${itemStat.index}__].category}" />
+													<input type="hidden" th:field="*{forms[__${itemStat.index}__].subCategory}" />
+													<input type="hidden" th:field="*{forms[__${itemStat.index}__].items}" />
 													<input type="hidden" th:field="*{forms[__${itemStat.index}__].textArea}" />
 													<td><input th:field="*{forms[__${itemStat.index}__].name}" /></td>
 				                                    <td><input th:field="*{forms[__${itemStat.index}__].code}" /></td>

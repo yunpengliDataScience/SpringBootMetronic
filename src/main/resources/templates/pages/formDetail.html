@@ -54,6 +54,24 @@
 								</div>
 								
 								<div class="form-group">
+									<label for="dynamicDropdown" class="col-form-label">Dynamic Dropdown</label>
+									
+									<select id="dynamicDropdown" class="form-control">
+									  <option value="" disabled selected></option> <!-- Default option -->
+									  <option value="1" data-brief="Option 1" data-detailed="Option 1 - Detailed Description">
+									    Option 1
+									  </option>
+									  <option value="2" data-brief="Option 2" data-detailed="Option 2 - Detailed Description">
+									    Option 2
+									  </option>
+									  <option value="3" data-brief="Option 3" data-detailed="Option 3 - Detailed Description">
+									    Option 3
+									  </option>
+									</select>
+								    
+								</div>
+								
+								<div class="form-group">
 									<label for="words" class="col-form-label">Word Selection</label>
 								    <select id="words" name="wordOptions" class="form-control" th:field="*{word}">
 								        <option value="" disabled selected>Select a word</option> <!-- Default option -->
@@ -152,6 +170,63 @@
 	                    });
 	                }
 	            });
+	        });
+	        
+	        /**
+	        	1. **`focus click` Event:**
+   				- When the dropdown is focused or clicked, all options are immediately updated to their detailed text (`data-detailed`). This ensures that even the selected option will display its detailed description.
+				2. **`change` Event:**
+   				- When an option is selected, the script updates the text of the selected option to its brief message (`data-brief`) after a slight delay. This allows the dropdown to close before changing the text.
+				3. **`blur` Event:**
+   				- When the dropdown loses focus, the script resets the `optionSelected` flag and updates the selected option to display its brief text, while all other options revert to their detailed text.
+	        **/
+	        $(document).ready(function () {
+	            var $dropdown = $('#dynamicDropdown');
+	            
+	            // Event to show detailed messages when dropdown is focused
+	            $dropdown.on('focus click', function () {
+	                // Update to detailed text for all options when dropdown is focused or clicked
+	                $dropdown.find('option').each(function () {
+	                    var detailedText = $(this).data('detailed'); // Get the detailed text
+	                    $(this).text(detailedText); // Update the option text to detailed
+	                });
+	            });
+	
+	            // Event to show brief message when an option is selected
+	            $dropdown.on('change', function () {
+	                
+	                // Get the selected option
+	                var $selectedOption = $dropdown.find('option:selected');
+	                var briefText = $selectedOption.data('brief'); // Get the brief text
+	
+	                // Use a timeout to allow dropdown to close before setting brief text
+	                setTimeout(function () {
+	                    $selectedOption.text(briefText); // Update the selected option text to brief
+	
+	                    // Reset other options to detailed text
+	                    $dropdown.find('option').not($selectedOption).each(function () {
+	                        var detailedText = $(this).data('detailed'); // Get the detailed text for other options
+	                        $(this).text(detailedText); // Reset text to detailed for other options
+	                    });
+	                }, 10);
+	            });
+	
+	            // Event to handle when dropdown loses focus
+	            $dropdown.on('blur', function () {
+	            
+	                var $selectedOption = $dropdown.find('option:selected');
+	                var briefText = $selectedOption.data('brief'); // Get the brief text
+	
+	                // Set brief text for the selected option
+	                $selectedOption.text(briefText);
+	
+	                // Reset other options to detailed text
+	                $dropdown.find('option').not($selectedOption).each(function () {
+	                    var detailedText = $(this).data('detailed');
+	                    $(this).text(detailedText);
+	                });
+	            });
+	            
 	        });
 		</script>
 		

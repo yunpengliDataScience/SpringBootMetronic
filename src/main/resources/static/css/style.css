@@ -47,3 +47,6 @@ body {
     margin-top: 10px;
 }
 
+select {
+	font-family: monospace;
+}

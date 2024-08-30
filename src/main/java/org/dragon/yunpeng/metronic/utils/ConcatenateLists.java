@@ -11,7 +11,7 @@ public class ConcatenateLists {
 		List<String> list2 = Arrays.asList("Red", "Yellow-B", "Dark Red");
 
 		// Call the method and get the aligned strings
-		List<String> alignedStrings = concatenateAndAlignLists(list1, list2);
+		List<String> alignedStrings = concatenateAndAlignLists(list1, list2, 10);
 
 		// Print the result
 		alignedStrings.forEach(System.out::println);
@@ -24,7 +24,7 @@ public class ConcatenateLists {
 	 * @param list2 The second list of strings.
 	 * @return A list of concatenated and aligned strings.
 	 */
-	public static List<String> concatenateAndAlignLists(List<String> list1, List<String> list2) {
+	public static List<String> concatenateAndAlignLists(List<String> list1, List<String> list2, int minimumSpace) {
 		// Ensure lists are the same size
 		if (list1.size() != list2.size()) {
 			throw new IllegalArgumentException("Both lists must have the same number of elements.");
@@ -39,7 +39,8 @@ public class ConcatenateLists {
 		// Concatenate and align
 		for (int i = 0; i < list1.size(); i++) {
 			// Align list1 element and add a space separator with list2 element
-			String alignedString = String.format("%-" + maxLenList1 + "s %s", list1.get(i), list2.get(i));
+			String alignedString = String.format("%-" + (maxLenList1 + minimumSpace) + "s %s", list1.get(i),
+					list2.get(i));
 			concatenatedList.add(alignedString);
 		}
 

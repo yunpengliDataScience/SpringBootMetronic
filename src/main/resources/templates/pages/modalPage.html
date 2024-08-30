@@ -56,7 +56,17 @@
 									</button>
 								</div>
 						    </div>
-							<button type="button" class="btn btn-bold btn-label-brand btn-sm" data-toggle="modal" data-target="#kt_modal_2"> Launch Modal 2</button>	
+							<button type="button" class="btn btn-bold btn-label-brand btn-sm" data-toggle="modal" data-target="#kt_modal_2"> Launch Modal 2 (File Upload)</button>
+							
+							<br/>
+							<button type="button" class="btn btn-bold btn-label-brand btn-sm" data-toggle="modal" data-target="#kt_modal_3"> Launch Modal 3 (Data Transfer)</button>
+							
+							<br/>
+							<!-- Display Data Here -->
+						    <div id="displayData" class="mt-3">
+						        <!-- Data from the modal will be displayed here -->
+						    </div>
+						    
 						</div>
 						<div class="kt-portlet__foot">
 						</div>
@@ -123,6 +133,35 @@
 			</div>
 			<!--end::Modal 2-->
 			
+			<!--begin::Modal 3-->
+			<div class="modal fade" id="kt_modal_3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<!--begin::form-->
+					<form class="kt-form" action="#" th:action="@{/}" method="post">
+
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Data Transfer</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								</button>
+							</div>
+							<div class="modal-body">
+	
+								<!-- Input Field in Modal -->
+                    			<input type="text" id="modalInput" class="form-control" placeholder="Enter some text">
+	
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    			<button type="button" class="btn btn-primary" id="saveButton">Save changes</button>
+							</div>
+						</div>
+					</form>
+					<!--end::form-->
+				</div>
+			</div>
+			<!--end::Modal 3-->
+			
 		</th:block>
 		
 		<script>
@@ -131,6 +170,20 @@
 			    var fileNameDisplay = document.getElementById('file-name');
 			    fileNameDisplay.textContent = fileName;
 			}
+			
+			$(document).ready(function() {
+            // Event listener for save button click
+	            $('#saveButton').click(function() {
+	                // Get the value from the input field in the modal
+	                const modalInputValue = $('#modalInput').val();
+	
+	                // Pass the data to the main page (display it in a div)
+	                $('#displayData').text(`Data from modal: ${modalInputValue}`);
+	
+	                // Close the modal
+	                $('#kt_modal_3').modal('hide');
+	            });
+	        });
 		</script>
 	</th:block>
 </html>

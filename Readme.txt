@@ -41,6 +41,8 @@ http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap12_Company_Multi
 http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap13_Portfolio_Multiple_Pages/index.html
 http://localhost:8082/SpringBootMetronic/BootstrapTemplates/Chap14_Parallax_Single_Page/index.html
 
+Other static page samples:
+http://localhost:8082/SpringBootMetronic/samples/modalWindowPassData.html
 ------------------------------------------------------------------------
 Dynamic list form binding: (See dynamicFormEditList.html)
 https://www.baeldung.com/thymeleaf-list

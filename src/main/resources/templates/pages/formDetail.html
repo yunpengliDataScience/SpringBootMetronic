@@ -30,6 +30,7 @@
 						<!--begin::form-->
 						<form class="kt-form" action="#" th:action="@{/forms/save}" th:object="${form}" method="post">
 							<input type="hidden" th:field="*{id}">
+							<!--begin: kt-portlet__body-->
 							<div class="kt-portlet__body">
 								<div class="form-group form-group-last">
 									<div class="alert alert-secondary" role="alert">
@@ -111,11 +112,56 @@
 										<option th:each="item : ${itemList}" th:value="${item.id}" th:text="${item.name}"></option>
 									</select>
 								</div>
-								<div class="form-group form-group-last">
-									<label for="exampleTextarea">Textarea</label>
+								<div class="form-group ">
+									<label for="textarea">Textarea</label>
 									<textarea class="form-control" th:field="*{textArea}" id="textarea" rows="3"></textarea>
 								</div>
+								
+								<!-- Tabs -->
+								<div class="form-group form-group-last">
+									<ul class="nav nav-pills nav-fill" role="tablist">
+										<li class="nav-item">
+											<a class="nav-link active" data-toggle="tab" href="#tab_1">Tab A</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" data-toggle="tab" href="#tab_2">Tab B</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" data-toggle="tab" href="#tab_3">Tab C</a>
+										</li>
+										<th:block th:if="${'DDDDDD'.equals(form.code)}">
+										<li class="nav-item">
+											<a class="nav-link" data-toggle="tab" href="#tab_4">Tab D</a>
+										</li>
+										</th:block>
+										<li class="nav-item">
+											<a class="nav-link disabled " data-toggle="tab" href="#tab_5">Disabled</a>
+										</li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active" id="tab_1" role="tabpanel">
+											<div class="form-group ">
+												<label for="comments">Comments</label>
+												<textarea class="form-control" th:field="*{comments}" id="comments" rows="3"></textarea>
+											</div>
+										</div>
+										<div class="tab-pane" id="tab_2" role="tabpanel">
+											Contents of Tab B
+										</div>
+										<div class="tab-pane" id="tab_3" role="tabpanel">
+											Contents of Tab C
+										</div>									
+										<div class="tab-pane" id="tab_4" role="tabpanel">
+											Contents of Tab D
+										</div>							
+										<div class="tab-pane" id="tab_5" role="tabpanel">
+											Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+										</div>
+									</div>
+								</div>
 							</div>
+							<!--end::kt-portlet__body-->
+							
 							<div class="kt-portlet__foot">
 								<div class="kt-form__actions">
 									<input type="submit" class="btn btn-primary" value="Save Form"/>

@@ -49,6 +49,8 @@ public class Form implements Serializable {
 
 	private String textArea;
 
+	private String comments;
+
 	@XmlTransient
 	@ManyToMany
 	@JoinTable(name = "FORM_ITEM", joinColumns = @JoinColumn(name = "FORM_ID"), inverseJoinColumns = @JoinColumn(name = "ITEM_ID"))
@@ -151,6 +153,14 @@ public class Form implements Serializable {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	@Override

@@ -364,6 +364,12 @@ public class DemoController {
 		model.addAttribute("form", form);
 		return "pages/formDetail";
 	}
+	
+	@GetMapping("/forms/horizontal")
+	public String newHorizontalForm(Model model, HttpServletRequest request) {
+
+		return "pages/formHorizontal";
+	}
 
 	@PostMapping("/forms/save")
 	public String saveForm(@ModelAttribute Form form, BindingResult result) {

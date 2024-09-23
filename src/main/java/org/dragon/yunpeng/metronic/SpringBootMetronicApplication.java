@@ -39,9 +39,38 @@ public class SpringBootMetronicApplication {
 		SpringBootMetronicApplication mainApplication = context.getBean(SpringBootMetronicApplication.class);
 
 		// Call method of the Spring Boot main application instance
-		mainApplication.openHomePage();
+		//mainApplication.openHomePage();
+		mainApplication.launchBrowser(true);
 	}
 
+	public void launchBrowser(boolean openChrome) {
+		try {
+			int port = serverPortService.getPort();
+
+			String url = "http://localhost:" + port + "/SpringBootMetronic";
+
+			System.setProperty("java.awt.headless", "false");
+
+			// Check if the desktop is supported
+			if (Desktop.isDesktopSupported() && !openChrome) {
+				Desktop desktop = Desktop.getDesktop();
+
+				// Open the default browser (which might be Chrome)
+				if (desktop.isSupported(Desktop.Action.BROWSE)) {
+					desktop.browse(new URI(url));
+				} else {
+					// You can manually run Chrome with this command (adjust the path if needed)
+					Runtime.getRuntime().exec("cmd /c start chrome " + url);
+				}
+			} else {
+				// In case Desktop is not supported, fallback to manually launching Chrome
+				Runtime.getRuntime().exec("cmd /c start chrome " + url);
+			}
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	// Launch browser and open home page after Spring Boot application starts.
 	private void openHomePage() {
 		try {

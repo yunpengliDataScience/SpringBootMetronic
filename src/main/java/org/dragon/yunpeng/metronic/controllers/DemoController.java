@@ -91,6 +91,13 @@ public class DemoController {
 
 		return "pages/dynamicFormEditList";
 	}
+	
+	
+	@GetMapping("/forms/dynamicAccordionsPage")
+	public String dynamicAccordionsPage(Model model) {
+
+		return "pages/dynamicAccordionsPage";
+	}
 
 	@GetMapping("/forms/export")
 	public String exportForms(Model model) {

@@ -1,265 +1,364 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	
-	<!-- Select the block having id as 'formDetail' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
+
+<!-- Select the block having id as 'formDetail' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
 		 defined in pageTemplate.html under fragments folder. The content should show up as the main content. 
 		 Since all styles, navigation, and page layout have been defined in the pageTemplate fragment, we only need to 
 		 focus on the main content construction. In addtion, page specific css links and scripts can be added. 
 	-->
-	<th:block th:replace="fragments/pageTemplate :: pageTemplate(title='Form Detail', pageId='formDetail', pageSpecificCSSLinks=~{}, pageSpecificScripts=~{::script}, content=~{:: #formDetail})">
-		
-		<th:block id="formDetail">
-			
-			<!--begion::row-->
-			<div class="row">
+<th:block
+	th:replace="fragments/pageTemplate :: pageTemplate(title='Form Detail', pageId='formDetail', pageSpecificCSSLinks=~{}, pageSpecificScripts=~{::script}, content=~{:: #formDetail})">
 
-				<!--begin::column-->
-				<div class="col-md-12">
-					
-					<!--begin::portlet-->
-					<div class="kt-portlet">
-						
-						<div class="kt-portlet__head">
-							<div class="kt-portlet__head-label">
-								<h3 class="kt-portlet__head-title">
-									Form Detail
-								</h3>
-							</div>
+	<th:block id="formDetail">
+
+		<!--begion::row-->
+		<div class="row">
+
+			<!--begin::column-->
+			<div class="col-md-12">
+
+				<!--begin::portlet-->
+				<div class="kt-portlet">
+
+					<div class="kt-portlet__head">
+						<div class="kt-portlet__head-label">
+							<h3 class="kt-portlet__head-title">
+								Form Detail
+							</h3>
 						</div>
+					</div>
 
-						<!--begin::form-->
-						<form class="kt-form" action="#" th:action="@{/forms/save}" th:object="${form}" method="post">
-							<input type="hidden" th:field="*{id}">
-							<!--begin: kt-portlet__body-->
-							<div class="kt-portlet__body">
-								<div class="form-group form-group-last">
-									<div class="alert alert-secondary" role="alert">
-										<div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
-										<div class="alert-text">
-											Demonstrate a basic form.
-										</div>
+					<!--begin::form-->
+					<form class="kt-form" action="#" th:action="@{/forms/save}" th:object="${form}" method="post">
+						<input type="hidden" th:field="*{id}">
+						<!--begin: kt-portlet__body-->
+						<div class="kt-portlet__body">
+							<div class="form-group form-group-last">
+								<div class="alert alert-secondary" role="alert">
+									<div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
+									<div class="alert-text">
+										Demonstrate a basic form.
 									</div>
 								</div>
-								<div class="form-group">
-									<label for="name" class="col-form-label">Form Name</label>
-                    				<input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Form Name" 
-                    					th:required="required">
-                    				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
-								</div>
-								<div class="form-group">
-									<label for="codes" class="col-form-label">Code Selection</label>
-								    <select id="codes" name="codeOptions" class="form-control" th:field="*{code}">
-								        <option value="" disabled selected>Select a code</option> <!-- Default option -->
-								        <option th:each="code : *{codes}" th:value="${code}" th:text="${code}" ></option>
-								    </select>
-								</div>
-								
-								<div class="form-group">
-									<label for="briefAndDetailDropdown" class="col-form-label">Brief and Detail Dropdown</label>
-									
-									<select id="briefAndDetailDropdown" class="form-control">
-									  <option value="" disabled selected></option> <!-- Default option -->
-									  <option value="1" data-brief="Option 1" data-detailed="Option 1 - Detailed Description">
-									    Option 1
-									  </option>
-									  <option value="2" data-brief="Option 2" data-detailed="Option 2 - Detailed Description">
-									    Option 2
-									  </option>
-									  <option value="3" data-brief="Option 3" data-detailed="Option 3 - Detailed Description">
-									    Option 3
-									  </option>
-									</select>
-								    
-								</div>
-								
-								<div class="form-group">
-									<label for="words" class="col-form-label">Word Selection</label>
-								    <select id="words" name="wordOptions" class="form-control" th:field="*{word}">
-								        <option value="" disabled selected>Select a word</option> <!-- Default option -->
-								        <option th:each="word : ${words}" th:value="${word}" th:text="${word}" ></option>
-								    </select>
-								</div>
-								
-								<div class="form-group">
-									<label for="category" class="col-form-label">Category</label>
-								    <select id="category" name="codeOptions" class="form-control" th:field="*{category}">
-								        <option value="" selected>Select a Category</option> <!-- Default option -->
-								        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-								    </select>
-								</div>
-								
-								<div class="form-group">
-									<label for="subCategory" class="col-form-label">Subcategory</label>
-								    <select id="subCategory" name="codeOptions" class="form-control" th:field="*{subCategory}">
-								        <option value="" selected>Select a Subcategory</option> <!-- Default option -->
-								        <option th:each="subCategory : ${subCategories}" th:value="${subCategory.id}" th:text="${subCategory.name}"></option>
-								    </select>
-								</div>
-								
-								<div class="form-group">
-									<label for="field1" class="col-form-label">Text Field 1</label>
-                    				<input type="text" th:field="*{field1}" class="form-control" id="field1" placeholder="Field1">
-                    				<span th:if="${#fields.hasErrors('field1')}" th:errors="*{field1}" class="text-danger"></span>
-								</div>
-								<div class="form-group">
-									<label for="field2" class="col-form-label">Text Field 2</label>
-                    				<input type="text" th:field="*{field2}" class="form-control" id="field2" placeholder="Field2">
-                    				<span th:if="${#fields.hasErrors('field2')}" th:errors="*{field2}" class="text-danger"></span>
-								</div>
-								<div class="form-group">
-									<label for="items">Multiple Select Items</label>
-									<select multiple="multiple" th:field="*{items}" class="form-control" id="items">
-										<option th:each="item : ${itemList}" th:value="${item.id}" th:text="${item.name}"></option>
-									</select>
-								</div>
-								<div class="form-group ">
-									<label for="textarea">Textarea</label>
-									<textarea class="form-control" th:field="*{textArea}" id="textarea" rows="3"></textarea>
-								</div>
-								
-								<!-- Tabs -->
-								<div class="form-group form-group-last">
-									<ul class="nav nav-pills nav-fill" role="tablist">
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-form-label">Form Name</label>
+								<input type="text" th:field="*{name}" class="form-control" id="name"
+									placeholder="Form Name" th:required="required">
+								<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+									class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="codes" class="col-form-label">Code Selection</label>
+								<select id="codes" name="codeOptions" class="form-control" th:field="*{code}">
+									<option value="" disabled selected>Select a code</option> <!-- Default option -->
+									<option th:each="code : *{codes}" th:value="${code}" th:text="${code}"></option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="briefAndDetailDropdown" class="col-form-label">Brief and Detail
+									Dropdown</label>
+
+								<select id="briefAndDetailDropdown" class="form-control">
+									<option value="" disabled selected></option> <!-- Default option -->
+									<option value="1" data-brief="Option 1"
+										data-detailed="Option 1 - Detailed Description">
+										Option 1
+									</option>
+									<option value="2" data-brief="Option 2"
+										data-detailed="Option 2 - Detailed Description">
+										Option 2
+									</option>
+									<option value="3" data-brief="Option 3"
+										data-detailed="Option 3 - Detailed Description">
+										Option 3
+									</option>
+								</select>
+
+							</div>
+
+							<div class="form-group">
+								<label for="words" class="col-form-label">Word Selection</label>
+								<select id="words" name="wordOptions" class="form-control" th:field="*{word}">
+									<option value="" disabled selected>Select a word</option> <!-- Default option -->
+									<option th:each="word : ${words}" th:value="${word}" th:text="${word}"></option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="category" class="col-form-label">Category</label>
+								<select id="category" name="codeOptions" class="form-control" th:field="*{category}">
+									<option value="" selected>Select a Category</option> <!-- Default option -->
+									<option th:each="category : ${categories}" th:value="${category.id}"
+										th:text="${category.name}"></option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="subCategory" class="col-form-label">Subcategory</label>
+								<select id="subCategory" name="codeOptions" class="form-control"
+									th:field="*{subCategory}">
+									<option value="" selected>Select a Subcategory</option> <!-- Default option -->
+									<option th:each="subCategory : ${subCategories}" th:value="${subCategory.id}"
+										th:text="${subCategory.name}"></option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="field1" class="col-form-label">Text Field 1</label>
+								<input type="text" th:field="*{field1}" class="form-control" id="field1"
+									placeholder="Field1">
+								<span th:if="${#fields.hasErrors('field1')}" th:errors="*{field1}"
+									class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="field2" class="col-form-label">Text Field 2</label>
+								<input type="text" th:field="*{field2}" class="form-control" id="field2"
+									placeholder="Field2">
+								<span th:if="${#fields.hasErrors('field2')}" th:errors="*{field2}"
+									class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label for="items">Multiple Select Items</label>
+								<select multiple="multiple" th:field="*{items}" class="form-control" id="items">
+									<option th:each="item : ${itemList}" th:value="${item.id}" th:text="${item.name}">
+									</option>
+								</select>
+							</div>
+							<div class="form-group ">
+								<label for="textarea">Textarea</label>
+								<textarea class="form-control" th:field="*{textArea}" id="textarea" rows="3"></textarea>
+							</div>
+
+							<!-- Tabs -->
+							<div class="form-group form-group-last">
+								<ul class="nav nav-pills nav-fill" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" data-toggle="tab" href="#tab_1">Comments Tab</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" data-toggle="tab" href="#tab_2">Accordions Tab</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" data-toggle="tab" href="#tab_3">C Tab</a>
+									</li>
+									<th:block th:if="${'DDDDDD'.equals(form.code)}">
 										<li class="nav-item">
-											<a class="nav-link active" data-toggle="tab" href="#tab_1">Tab A</a>
+											<a class="nav-link" data-toggle="tab" href="#tab_4">D Tab</a>
 										</li>
-										<li class="nav-item">
-											<a class="nav-link" data-toggle="tab" href="#tab_2">Tab B</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" data-toggle="tab" href="#tab_3">Tab C</a>
-										</li>
-										<th:block th:if="${'DDDDDD'.equals(form.code)}">
-										<li class="nav-item">
-											<a class="nav-link" data-toggle="tab" href="#tab_4">Tab D</a>
-										</li>
-										</th:block>
-										<li class="nav-item">
-											<a class="nav-link disabled " data-toggle="tab" href="#tab_5">Disabled</a>
-										</li>
-									</ul>
-									<div class="tab-content">
-										<div class="tab-pane active" id="tab_1" role="tabpanel">
-											<div class="form-group ">
-												<label for="comments">Comments</label>
-												<textarea class="form-control" th:field="*{comments}" id="comments" rows="3"></textarea>
+									</th:block>
+									<li class="nav-item">
+										<a class="nav-link disabled " data-toggle="tab" href="#tab_5">Disabled</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="tab_1" role="tabpanel">
+										<div class="form-group ">
+											<label for="comments">Comments</label>
+											<textarea class="form-control" th:field="*{comments}" id="comments"
+												rows="3"></textarea>
+										</div>
+									</div>
+									<div class="tab-pane" id="tab_2" role="tabpanel">
+										<!--begin::Accordion-->
+										<div class="accordion" id="accordionExample1">
+											<div class="card">
+												<div class="card-header" id="headingOne">
+													<div class="card-title" data-toggle="collapse"
+														data-target="#collapseOne1" aria-expanded="true"
+														aria-controls="collapseOne1">
+														Latest Orders
+													</div>
+												</div>
+												<div id="collapseOne1" class="collapse show"
+													aria-labelledby="headingOne" data-parent="#accordionExample1">
+													<div class="card-body">
+														Anim pariatur cliche reprehenderit, enim eiusmod high life
+														accusamus terry richardson ad squid. 3 wolf moon officia aute,
+														non cupidatat skateboard dolor brunch. Food truck quinoa
+														nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
+														put a bird on it squid single-origin coffee nulla assumenda
+														shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+														wes anderson cred nesciunt sapiente ea proident. Ad vegan
+														excepteur butcher vice lomo. Leggings occaecat craft beer
+														farm-to-table, raw denim aesthetic synth nesciunt you probably
+														haven't heard of them accusamus labore sustainable VHS.
+													</div>
+												</div>
+											</div>
+											<div class="card">
+												<div class="card-header" id="headingTwo">
+													<div class="card-title collapsed" data-toggle="collapse"
+														data-target="#collapseTwo1" aria-expanded="false"
+														aria-controls="collapseTwo1">
+														Product Updates
+													</div>
+												</div>
+												<div id="collapseTwo1" class="collapse" aria-labelledby="headingTwo1"
+													data-parent="#accordionExample1">
+													<div class="card-body">
+														Anim pariatur cliche reprehenderit, enim eiusmod high life
+														accusamus terry richardson ad squid. 3 wolf moon officia aute,
+														non cupidatat skateboard dolor brunch. Food truck quinoa
+														nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
+														put a bird on it squid single-origin coffee nulla assumenda
+														shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+														wes anderson cred nesciunt sapiente ea proident. Ad vegan
+														excepteur butcher vice lomo. Leggings occaecat craft beer
+														farm-to-table, raw denim aesthetic synth nesciunt you probably
+														haven't heard of them accusamus labore sustainable VHS.
+													</div>
+												</div>
+											</div>
+											<div class="card">
+												<div class="card-header" id="headingThree1">
+													<div class="card-title collapsed" data-toggle="collapse"
+														data-target="#collapseThree1" aria-expanded="false"
+														aria-controls="collapseThree1">
+														Pending Items
+													</div>
+												</div>
+												<div id="collapseThree1" class="collapse"
+													aria-labelledby="headingThree1" data-parent="#accordionExample1">
+													<div class="card-body">
+														Anim pariatur cliche reprehenderit, enim eiusmod high life
+														accusamus terry richardson ad squid. 3 wolf moon officia aute,
+														non cupidatat skateboard dolor brunch. Food truck quinoa
+														nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
+														put a bird on it squid single-origin coffee nulla assumenda
+														shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+														wes anderson cred nesciunt sapiente ea proident. Ad vegan
+														excepteur butcher vice lomo. Leggings occaecat craft beer
+														farm-to-table, raw denim aesthetic synth nesciunt you probably
+														haven't heard of them accusamus labore sustainable VHS.
+													</div>
+												</div>
 											</div>
 										</div>
-										<div class="tab-pane" id="tab_2" role="tabpanel">
-											Contents of Tab B
-										</div>
-										<div class="tab-pane" id="tab_3" role="tabpanel">
-											Contents of Tab C
-										</div>									
-										<div class="tab-pane" id="tab_4" role="tabpanel">
-											Contents of Tab D
-										</div>							
-										<div class="tab-pane" id="tab_5" role="tabpanel">
-											Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-										</div>
+
+										<!--end::Accordion-->
+									</div>
+									<div class="tab-pane" id="tab_3" role="tabpanel">
+										Contents of Tab C
+									</div>
+									<div class="tab-pane" id="tab_4" role="tabpanel">
+										Contents of Tab D
+									</div>
+									<div class="tab-pane" id="tab_5" role="tabpanel">
+										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+										Ipsum has been the industry's standard dummy text ever since the 1500s, when an
+										unknown printer took a galley of type and scrambled it to make a type specimen
+										book. It has survived not only five centuries, but also the leap into electronic
+										typesetting, remaining essentially unchanged. Lorem Ipsum is simply dummy text
+										of the printing and typesetting industry. Lorem Ipsum has been the industry's
+										standard dummy text ever since the 1500s, when an unknown printer took a galley
+										of type and
 									</div>
 								</div>
 							</div>
-							<!--end::kt-portlet__body-->
-							
-							<div class="kt-portlet__foot">
-								<div class="kt-form__actions">
-									<input type="submit" class="btn btn-primary" value="Save Form"/>
-									<input type="reset" class="btn btn-secondary" value="Cancel">
-								</div>
-							</div>
-						</form>
-						<!--end::form-->
-					</div>
-					<!--end::portlet-->
-				</div>
-				<!--end::column-->
-				
-			</div>
-			<!--end::row-->
-		</th:block>
-		
-		<script>
-			$(document).ready(function() {
-				console.log('Script is added.');
-				//Use Select2
-				$('#words').select2();
-				
-				});
-				
-			 $(document).ready(function() {
-	            $('#category').change(function() {
-					
-					var requestPath = "[[@{'/api'}]]" + "/subcategories/";
-					
-	                var categoryId = $(this).val();
-	                var subcategorySelect = $('#subCategory');
-	                subcategorySelect.empty().append('<option value="">Select a Subcategory</option>');
-	
-					//alert(categoryId);
-					//alert(requestPath);
-					
-	                if (categoryId) {
-						var url = requestPath + categoryId;
-						
-						//alert(url);
-						
-	                    $.ajax({
-	                        //url: 'http://localhost:8082/SpringBootMetronic/api/subcategories/' + categoryId,
-	                        url: url,
-	                        method: 'GET',
-	                        success: function(data) {
-	                            data.forEach(function(subcategory) {
-	                                subcategorySelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
-	                            });
-	                        }
-	                    });
-	                }
-	            });
-	        });
-	        
-	        /**
-	        	1. **`focus click` Event:**
-   				- When the dropdown is focused or clicked, all options are immediately updated to their detailed text (`data-detailed`). This ensures that even the selected option will display its detailed description.
-				2. **`change` Event:**
-   				- When an option is selected, the script updates the text of the selected option to its brief message (`data-brief`) after a slight delay. This allows the dropdown to close before changing the text.
-				3. **`blur` Event:**
-   				- When the dropdown loses focus, the script resets the `optionSelected` flag and updates the selected option to display its brief text, while all other options revert to their detailed text.
-	        **/
-	        function setupDynamicDropdown(dropdownId) {
-	            var $dropdown = $(dropdownId);
-	
-	            // Function to update options text to detailed
-	            function showDetailedText() {
-	                $dropdown.find('option').each(function () {
-	                    $(this).text($(this).data('detailed')); // Update option text to detailed
-	                });
-	            }
-	
-	            // Function to update selected option text to brief
-	            function showBriefText() {
-	                var $selectedOption = $dropdown.find('option:selected');
-	                $selectedOption.text($selectedOption.data('brief')); // Update selected option text to brief
-	            }
-	
-	            // Event to show detailed messages when dropdown is focused or clicked
-	            $dropdown.on('focus click', showDetailedText);
-	
-	            // Event to show brief message when an option is selected
-	            $dropdown.on('change', function () {
-	                setTimeout(showBriefText, 10); // Update selected option text to brief after a delay
-	            });
-	
-	            // Event to handle when dropdown loses focus
-	            $dropdown.on('blur', showBriefText);
-	        }
+						</div>
+						<!--end::kt-portlet__body-->
 
-	        // Initialize dynamic dropdowns
-	        $(document).ready(function () {
-	            setupDynamicDropdown('#briefAndDetailDropdown');
-	            //setupDynamicDropdown('#dropdown2');
-	        });
-		</script>
-		
+						<div class="kt-portlet__foot">
+							<div class="kt-form__actions">
+								<input type="submit" class="btn btn-primary" value="Save Form" />
+								<input type="reset" class="btn btn-secondary" value="Cancel">
+							</div>
+						</div>
+					</form>
+					<!--end::form-->
+				</div>
+				<!--end::portlet-->
+			</div>
+			<!--end::column-->
+
+		</div>
+		<!--end::row-->
 	</th:block>
+
+	<script>
+		$(document).ready(function () {
+			console.log('Script is added.');
+			//Use Select2
+			$('#words').select2();
+
+		});
+
+		$(document).ready(function () {
+			$('#category').change(function () {
+
+				var requestPath = "[[@{'/api'}]]" + "/subcategories/";
+
+				var categoryId = $(this).val();
+				var subcategorySelect = $('#subCategory');
+				subcategorySelect.empty().append('<option value="">Select a Subcategory</option>');
+
+				//alert(categoryId);
+				//alert(requestPath);
+
+				if (categoryId) {
+					var url = requestPath + categoryId;
+
+					//alert(url);
+
+					$.ajax({
+						//url: 'http://localhost:8082/SpringBootMetronic/api/subcategories/' + categoryId,
+						url: url,
+						method: 'GET',
+						success: function (data) {
+							data.forEach(function (subcategory) {
+								subcategorySelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+							});
+						}
+					});
+				}
+			});
+		});
+
+		/**
+			1. **`focus click` Event:**
+					- When the dropdown is focused or clicked, all options are immediately updated to their detailed text (`data-detailed`). This ensures that even the selected option will display its detailed description.
+			2. **`change` Event:**
+					- When an option is selected, the script updates the text of the selected option to its brief message (`data-brief`) after a slight delay. This allows the dropdown to close before changing the text.
+			3. **`blur` Event:**
+					- When the dropdown loses focus, the script resets the `optionSelected` flag and updates the selected option to display its brief text, while all other options revert to their detailed text.
+		**/
+		function setupDynamicDropdown(dropdownId) {
+			var $dropdown = $(dropdownId);
+
+			// Function to update options text to detailed
+			function showDetailedText() {
+				$dropdown.find('option').each(function () {
+					$(this).text($(this).data('detailed')); // Update option text to detailed
+				});
+			}
+
+			// Function to update selected option text to brief
+			function showBriefText() {
+				var $selectedOption = $dropdown.find('option:selected');
+				$selectedOption.text($selectedOption.data('brief')); // Update selected option text to brief
+			}
+
+			// Event to show detailed messages when dropdown is focused or clicked
+			$dropdown.on('focus click', showDetailedText);
+
+			// Event to show brief message when an option is selected
+			$dropdown.on('change', function () {
+				setTimeout(showBriefText, 10); // Update selected option text to brief after a delay
+			});
+
+			// Event to handle when dropdown loses focus
+			$dropdown.on('blur', showBriefText);
+		}
+
+		// Initialize dynamic dropdowns
+		$(document).ready(function () {
+			setupDynamicDropdown('#briefAndDetailDropdown');
+			//setupDynamicDropdown('#dropdown2');
+		});
+	</script>
+
+</th:block>
+
 </html>

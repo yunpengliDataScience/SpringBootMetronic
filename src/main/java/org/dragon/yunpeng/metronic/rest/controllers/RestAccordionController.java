@@ -1,15 +1,16 @@
-package org.dragon.yunpeng.metronic.controllers;
+package org.dragon.yunpeng.metronic.rest.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+@RestController
+@RequestMapping("/accordions")
+public class RestAccordionController {
 
-@Controller
-public class AccordionController {
-
+	// Define an inner class or a separate class representing each object
 	public static class Item {
 		private String title;
 		private String content;
@@ -28,16 +29,13 @@ public class AccordionController {
 		}
 	}
 
-	@GetMapping("/forms/accordionsPage")
-	public String getAccordionPage(Model model) {
+	// Simulate a service that provides a list of items
+	@GetMapping("/items")
+	public List<Item> getItems() {
 		List<Item> items = new ArrayList<>();
 		items.add(new Item("Accordion 1", "Content for accordion 1."));
 		items.add(new Item("Accordion 2", "Content for accordion 2."));
 		items.add(new Item("Accordion 3", "Content for accordion 3."));
-
-		// Add the list of items to the model
-		model.addAttribute("items", items);
-
-		return "pages/accordionPage"; // This refers to the Thymeleaf template name
+		return items;
 	}
 }

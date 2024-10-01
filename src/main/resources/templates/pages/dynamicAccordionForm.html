@@ -36,6 +36,9 @@
 
 					console.log("parent: " + parent);
 					parent.children.forEach(function (child, index) {
+						
+						//Define a HTML template in javaScript by back-quote ``.
+						//Use $(variable) to insert the value.
 						var accordionItem = `
 	                            <div class="card">
 	                                <div class="card-header" id="heading${index}">
@@ -52,6 +55,9 @@
 	                                        <!-- Text Area -->
 											<div class="form-group">
 												<label for="child${index}">Text Area:</label>
+												<!-- Spring Boot is smart enough to infer which child's text field by locating the index (children[x].text). 
+												     The backend controller Post method need to have the parameter object annotated by @ModelAttribute. 
+												 -->
 												<textarea id="child${index}" name="children[${index}].text" class="form-control" rows="3"></textarea>
 											</div>
 											

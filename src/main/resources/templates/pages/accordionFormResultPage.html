@@ -14,6 +14,7 @@
 	<th:block id="mainContent">
 		<ul>
 			<li th:each="child : ${parent.children}">
+				Title: <span th:text="${child.title}">Title</span> <br>
 				Selection: <span th:text="${child.selection}">Option</span> <br>
 				Text: <span th:text="${child.text}">Text content</span>
 			</li>

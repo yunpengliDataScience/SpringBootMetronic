@@ -1,5 +1,6 @@
 package org.dragon.yunpeng.metronic.rest.controllers;
 
+import org.dragon.yunpeng.metronic.pojos.Parent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +38,12 @@ public class RestAccordionController {
 		items.add(new Item("Accordion 2", "Content for accordion 2."));
 		items.add(new Item("Accordion 3", "Content for accordion 3."));
 		return items;
+	}
+	
+	@GetMapping("/dynamicAccordionFormObject")
+	public Parent getFormObject() {
+		Parent parent = new Parent();
+		
+		return parent;
 	}
 }

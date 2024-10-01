@@ -13,7 +13,7 @@
 
 	<th:block id="mainContent">
 		<div class="container mt-5">
-			<h2>Dynamic Accordion Form</h2>
+			<h2>Accordion Form</h2>
 			<form action="#" th:action="@{/accordionForm/submit}" th:object="${parent}" method="post">
 				<div id="accordion">
 					<th:block th:each="child, indexStat : ${parent.children}">

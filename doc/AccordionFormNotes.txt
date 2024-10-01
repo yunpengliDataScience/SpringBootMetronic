@@ -1,0 +1,187 @@
+Here is the entire working Thymeleaf and Spring Boot example, with the corrections made to ensure the accordion functionality works correctly without any `Malformed markup` errors.
+
+### Complete Thymeleaf Template:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accordion Form</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Dynamic Accordion Form</h2>
+    <form action="#" th:action="@{/submit}" th:object="${parent}" method="post">
+        <div id="accordion">
+            <!-- Loop through the list of child objects -->
+            <th:block th:each="child, indexStat : ${parent.children}">
+                <div class="card">
+                    <div class="card-header" th:attr="id='heading' + ${indexStat.index}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" 
+                                    th:attr="data-toggle='collapse', data-target='#collapse' + ${indexStat.index}, aria-controls='collapse' + ${indexStat.index}">
+                                Child Accordion #<span th:text="${indexStat.index + 1}">1</span>
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div th:attr="id='collapse' + ${indexStat.index}, aria-labelledby='heading' + ${indexStat.index}" 
+                         class="collapse" data-parent="#accordion">
+                        <div class="card-body">
+                            <!-- Selection Dropdown -->
+                            <div class="form-group">
+                                <label for="selection">Selection:</label>
+                                <select th:field="*{children[__${indexStat.index}__].selection}" class="form-control">
+                                    <option value="Option 1">Option 1</option>
+                                    <option value="Option 2">Option 2</option>
+                                    <option value="Option 3">Option 3</option>
+                                </select>
+                            </div>
+
+                            <!-- Text Area -->
+                            <div class="form-group">
+                                <label for="text">Text Area:</label>
+                                <textarea th:field="*{children[__${indexStat.index}__].text}" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+</div>
+
+<!-- Bootstrap JS, jQuery, and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+```
+
+### Spring Boot Controller:
+
+Here’s the Spring Boot controller that supports this template:
+
+```java
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class AccordionController {
+
+    @GetMapping("/")
+    public String showForm(Model model) {
+        ParentObject parent = new ParentObject();
+        parent.getChildren().add(new ChildObject());
+        parent.getChildren().add(new ChildObject()); // Add more child objects if needed
+        model.addAttribute("parent", parent);
+        return "accordionForm";
+    }
+
+    @PostMapping("/submit")
+    public String submitForm(ParentObject parent) {
+        // Handle the submitted form data
+        System.out.println("Form submitted: " + parent);
+        return "redirect:/";
+    }
+}
+```
+
+### Model Classes:
+
+1. **ParentObject**:
+    ```java
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class ParentObject {
+        private List<ChildObject> children = new ArrayList<>();
+
+        public List<ChildObject> getChildren() {
+            return children;
+        }
+
+        public void setChildren(List<ChildObject> children) {
+            this.children = children;
+        }
+    }
+    ```
+
+2. **ChildObject**:
+    ```java
+    public class ChildObject {
+        private String selection;
+        private String text;
+
+        public String getSelection() {
+            return selection;
+        }
+
+        public void setSelection(String selection) {
+            this.selection = selection;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
+    ```
+
+### Explanation:
+
+1. **Accordion Layout**:
+   - The Thymeleaf `th:each` loop generates multiple accordion sections based on the number of child objects in the `parent` object.
+   - Each accordion has a button to toggle the collapse of the accordion section, and the button uses `data-toggle="collapse"` and `data-target` to correctly reference the collapsible content.
+
+2. **Dynamic IDs**:
+   - Dynamic IDs are generated for each accordion section to ensure the collapse behavior is specific to each section. This is done using Thymeleaf syntax like `th:attr="id='heading' + ${indexStat.index}"` to dynamically generate unique IDs for each section.
+
+3. **Form Submission**:
+   - The form submits the entire `parent` object, which contains a list of `children` with each `ChildObject` having a selection (from the dropdown) and text (from the textarea).
+
+4. **Controller**:
+   - The `GET` method loads the form with a `parent` object that contains an empty list of `children`.
+   - The `POST` method handles the form submission and prints the form data.
+
+### Required Dependencies:
+
+Make sure to include Thymeleaf and Spring Boot dependencies in your `pom.xml` or `build.gradle`:
+
+For **Maven** (`pom.xml`):
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+For **Gradle** (`build.gradle`):
+
+```gradle
+implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+implementation 'org.springframework.boot:spring-boot-starter-web'
+```
+
+### Summary:
+
+This example demonstrates a working Spring Boot and Thymeleaf accordion form where the user can fill in multiple sections, and upon submission, all data is captured and processed. Each accordion section has a dropdown and a textarea, and the accordion expand/collapse functionality is correctly handled using Bootstrap 4.

@@ -51,7 +51,16 @@
 
 	                                <div id="collapse${index}" class="collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading${index}" data-parent="#dynamicAccordionSection">
 	                                    <div class="card-body">
-	                                        
+	                                        <div class="form-group">
+												<label for="selection">Selection:</label>
+												<select name="children[${index}].selection" class="form-control">
+													<option value="" selected></option>
+													<option value="Option 1">Option 1</option>
+													<option value="Option 2">Option 2</option>
+													<option value="Option 3">Option 3</option>
+													<option value="Option 4">Option 4</option>
+												</select>
+											</div>
 	                                        <!-- Text Area -->
 											<div class="form-group">
 												<label for="child${index}">Text Area:</label>

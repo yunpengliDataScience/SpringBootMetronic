@@ -55,6 +55,7 @@
 												<label for="selection">Selection:</label>
 												<select name="children[${index}].selection" class="form-control">
 													<!-- Use loop in HTML literal -->
+													<option value="" selected></option>
 													${child.options.map(opt=>`<option value="${opt}">${opt}</option>`).join('')}
 													<!--
 													<option value="" selected></option>

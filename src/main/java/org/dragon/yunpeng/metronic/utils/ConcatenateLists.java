@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConcatenateLists {
+	
+	/*
 	public static void main(String[] args) {
 		// Example lists
 		List<String> list1 = Arrays.asList("Apple", "Banana-A", "Cherry");
@@ -16,6 +18,7 @@ public class ConcatenateLists {
 		// Print the result
 		alignedStrings.forEach(System.out::println);
 	}
+	*/
 
 	/**
 	 * Concatenates and aligns two lists of strings.

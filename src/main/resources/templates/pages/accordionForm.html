@@ -17,12 +17,12 @@
 			<form action="#" th:action="@{/accordionForm/submit}" th:object="${parent}" method="post">
 				<div id="accordion">
 					<th:block th:each="child, indexStat : ${parent.children}">
-						<div class="card">
+						<div class="card" th:id="accordionCard + ${indexStat.index}">
 							<div class="card-header" th:attr="id='heading' + ${indexStat.index}">
 								<h5 class="mb-0">
 									<button class="btn btn-link" type="button"
 										th:attr="data-toggle='collapse', data-target='#collapse' + ${indexStat.index}, aria-controls='collapse' + ${indexStat.index}">
-										Child Accordion #<span th:text="${indexStat.index + 1}">1</span>
+										Child Accordion #<span th:text="${indexStat.index}">1</span>
 									</button>
 								</h5>
 							</div>
@@ -34,18 +34,28 @@
 									<div class="form-group">
 										<label for="selection">Selection:</label>
 										<select th:field="*{children[__${indexStat.index}__].selection}" class="form-control">
+											<th:block th:each="option, indexStat : ${child.options}">
+												<option th:value="${option}">[[${option}]]</option>
+											</th:block>
+											<!--
 											<option value="Option 1">Option 1</option>
 											<option value="Option 2">Option 2</option>
 											<option value="Option 3">Option 3</option>
 											<option value="Option 4">Option 4</option>
+											-->
 										</select>
 									</div>
 
 									<!-- Text Area -->
 									<div class="form-group">
 										<label for="text">Text Area:</label>
-										<textarea th:field="*{children[__${indexStat.index}__].text}"
-											class="form-control" rows="3"></textarea>
+										<textarea th:field="*{children[__${indexStat.index}__].text}" class="form-control" rows="3">
+										</textarea>
+										
+										<th:block th:if="${#fields.hasErrors('*{children[__${indexStat.index}__].text}')}">
+											<div th:each="error : ${#fields.errors('*{children[__${indexStat.index}__].text}')}" th:text="${error}" th:id="accordionCardError + ${indexStat.index}" class="text-danger font-weight-bold"></div>
+										</th:block>
+										
 									</div>
 								</div>
 							</div>
@@ -60,7 +70,15 @@
 	</th:block>
 
 	<script type="text/javascript">
-
+		$(document).ready(function () {
+				//Scan through all accordions, and if error id presents, change the accordion border color.
+				for (i = 0; i < 4; i++) {
+					if ($('#accordionCardError' + i).length) {
+						$('#heading' + i).css('borderColor', 'red');
+						$('#accordionCard' + i).css('borderColor', 'red');
+					}
+				}
+			});
 	</script>
 </th:block>
 

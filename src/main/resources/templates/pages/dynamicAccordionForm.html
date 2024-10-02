@@ -37,8 +37,8 @@
 					console.log("parent: " + parent);
 					parent.children.forEach(function (child, index) {
 						
-						//Define a HTML template in javaScript by back-quote ``.
-						//Use $(variable) to insert the value.
+						//Define a HTML literal template in javaScript by back-ticks ``.
+						//Use $(variable) to interpolate the value.
 						var accordionItem = `
 	                            <div class="card">
 	                                <div class="card-header" id="heading${index}">
@@ -54,11 +54,15 @@
 	                                        <div class="form-group">
 												<label for="selection">Selection:</label>
 												<select name="children[${index}].selection" class="form-control">
+													<!-- Use loop in HTML literal -->
+													${child.options.map(opt=>`<option value="${opt}">${opt}</option>`).join('')}
+													<!--
 													<option value="" selected></option>
 													<option value="Option 1">Option 1</option>
 													<option value="Option 2">Option 2</option>
 													<option value="Option 3">Option 3</option>
 													<option value="Option 4">Option 4</option>
+													-->
 												</select>
 											</div>
 	                                        <!-- Text Area -->

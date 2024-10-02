@@ -14,8 +14,10 @@ public class Parent implements Serializable {
 		// Initialize with 3 children for demonstration purposes
 		children = new ArrayList<Child>();
 
+		String[] marks = { "AAA", "BBB", "CCC", "DDD" };
+
 		for (int i = 0; i < 4; i++) {
-			Child child = new Child();
+			Child child = new Child(marks[i]);
 			child.setTitle("Child " + i);
 			children.add(child);
 		}

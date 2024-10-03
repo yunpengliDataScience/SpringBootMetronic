@@ -27,6 +27,8 @@ public class AccordionFormValidator implements Validator {
 			String field = "children[" + i + "].text";
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, field, null, "Field " + field + " is a required Field");
 		}
+
+		System.out.println("errors=" + errors);
 	}
 
 }

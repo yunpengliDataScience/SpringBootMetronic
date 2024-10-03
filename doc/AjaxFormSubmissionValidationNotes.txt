@@ -1,0 +1,142 @@
+Since you're using **Spring Boot** on the backend and **jQuery** on the frontend, the approach is slightly different but still straightforward. Here’s how you can submit the form using jQuery, handle the server-side validation in Spring Boot, and then display any validation errors while preserving the user's input.
+
+### Frontend (HTML and jQuery)
+
+#### Example Form:
+```html
+<form id="myForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+    <span id="usernameError" class="error"></span>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+    <span id="emailError" class="error"></span>
+
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Add jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#myForm').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        $.ajax({
+            url: '/submit-form',  // Adjust with your endpoint
+            type: 'POST',
+            data: $(this).serialize(), // Serialize form data for submission
+            success: function(response) {
+                if (response.success) {
+                    // Handle success (maybe show a success message or redirect)
+                    alert('Form submitted successfully!');
+                } else {
+                    // Clear any previous errors
+                    $('.error').text('');
+
+                    // Display validation errors
+                    for (const field in response.errors) {
+                        $('#' + field + 'Error').text(response.errors[field]);
+                    }
+
+                    // Repopulate form with previous values
+                    for (const field in response.oldValues) {
+                        $('#' + field).val(response.oldValues[field]);
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+});
+</script>
+```
+
+### Backend (Spring Boot)
+
+1. **Create a DTO (Data Transfer Object) for form data.**
+
+```java
+public class FormDTO {
+    @NotEmpty(message = "Username is required")
+    private String username;
+
+    @NotEmpty(message = "Email is required")
+    @Email(message = "Valid email is required")
+    private String email;
+
+    // Getters and setters
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+```
+
+2. **Handle form submission in the controller.**
+
+```java
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+public class FormController {
+
+    @PostMapping("/submit-form")
+    public Map<String, Object> submitForm(@Valid @ModelAttribute FormDTO formDTO, BindingResult bindingResult) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+
+            // Return the errors and old values to the client
+            response.put("success", false);
+            response.put("errors", errors);
+            response.put("oldValues", formDTO);
+            return response;
+        }
+
+        // If no validation errors
+        response.put("success", true);
+        return response;
+    }
+}
+```
+
+### Key Points:
+1. **Spring Boot Validation**: We use `@Valid` to trigger validation on the `FormDTO` object, and any errors are captured in the `BindingResult`.
+2. **jQuery**: Handles the form submission via `$.ajax()` and processes the server response, including displaying errors and repopulating the form fields.
+3. **Error Handling**: Errors from the server are passed back as JSON, and jQuery updates the DOM by inserting the error messages and preserving the user's input.
+
+### Explanation:
+
+- **jQuery Form Submission**: The form is submitted via an AJAX request (`$.ajax()`), and the data is serialized using `$(this).serialize()`, which collects the form data.
+- **Server Response**: On success, if the server detects validation errors, it sends the error messages and the old input values back to the client. These are then used to update the form fields.
+- **BindingResult**: This is used in Spring Boot to check if there are validation errors, and `FieldError` objects contain field-specific error messages.
+
+This approach will ensure that:
+1. Validation errors are displayed next to the corresponding fields.
+2. The user's input is repopulated in the form, even after a validation failure.

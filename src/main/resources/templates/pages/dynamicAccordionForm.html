@@ -14,9 +14,19 @@
 	<th:block id="mainContent">
 		<div class="container mt-5">
 			<h2>Dynamic Accordion Form</h2>
-			<form action="#" th:action="@{/accordionForm/submit}" th:object="${parent}" method="post">
+
+			<form action="#" th:action="@{/dynamicAccordionForm/submit}" th:object="${parent}" method="post">
+				
+				<!--Display all errors -->
+				<div th:if="${#fields.hasErrors()}">
+				    <ul>
+				        <li th:each="err : ${#fields.errors()}" th:text="${err}" class="text-danger font-weight-bold"></li>
+				    </ul>
+				</div>
 				<div class="accordion" id="dynamicAccordionSection"></div>
 
+				<button id="loadFormButton" type="button" class="btn btn-primary mt-3">Load Form</button>
+				
 				<!-- Submit Button -->
 				<button type="submit" class="btn btn-primary mt-3">Submit</button>
 			</form>
@@ -24,8 +34,7 @@
 	</th:block>
 
 	<script type="text/javascript">
-		$(document).ready(function () {
-
+		function loadAccordions(){
 			url = "[[@{'/accordions'}]]" + "/dynamicAccordionFormObject/";
 
 			$.ajax({
@@ -86,7 +95,10 @@
 					console.log('Error:', error);
 				}
 			});
-		});
+		}
+		
+		$(document).ready(loadAccordions);
+		//$('#loadFormButton').click(loadAccordions);
 	</script>
 
 </th:block>

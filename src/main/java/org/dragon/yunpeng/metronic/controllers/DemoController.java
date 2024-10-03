@@ -470,4 +470,10 @@ public class DemoController {
 
 		return "pages/samplePage";
 	}
+	
+	@GetMapping("/forms/ajaxFormSubmissionValidation")
+	public String ajaxFormSubmissionValidationPage(Model model) {
+
+		return "pages/ajaxFormSubmissionValidation";
+	}
 }

@@ -45,4 +45,18 @@ public class AccordionFormController {
 		model.addAttribute("parent", parent);
 		return "pages/accordionFormResultPage";
 	}
+	
+	@PostMapping("/dynamicAccordionForm/submit")
+	public String submitForm2(@ModelAttribute Parent parent, Model model, BindingResult result) {
+
+		accordionFormValidator.validate(parent, result);
+
+		if (result.hasErrors()) {
+			return "pages/dynamicAccordionForm";
+		}
+		// Here, you can save the parent object with its children
+		// For demonstration, we will just return the object to a result page
+		model.addAttribute("parent", parent);
+		return "pages/accordionFormResultPage";
+	}
 }

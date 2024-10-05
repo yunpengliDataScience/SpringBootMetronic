@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Controller
 public class SurveyController {
@@ -19,12 +19,12 @@ public class SurveyController {
 		// Create a survey with two empty questions, each with two empty answers
 		Survey survey = new Survey();
 		Question question1 = new Question();
-		question1.setAnswers(List.of(new Answer(), new Answer()));
+		question1.setAnswers(Arrays.asList(new Answer(), new Answer()));
 
 		Question question2 = new Question();
-		question2.setAnswers(List.of(new Answer(), new Answer()));
+		question2.setAnswers(Arrays.asList(new Answer(), new Answer()));
 
-		survey.setQuestions(List.of(question1, question2));
+		survey.setQuestions(Arrays.asList(question1, question2));
 
 		model.addAttribute("survey", survey);
 		return "pages/nestedListForm"; // Return the form page

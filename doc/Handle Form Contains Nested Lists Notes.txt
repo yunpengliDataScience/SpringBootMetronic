@@ -1,0 +1,233 @@
+If you have a list where each element is itself a list (a **nested list**), and you want to handle that in a Thymeleaf form, the approach is similar to handling single-level lists, but you will need to iterate through both the outer list and the inner lists.
+
+### Scenario: Nested List in Thymeleaf
+
+Let’s assume you have the following structure:
+
+- A **Survey** object that contains:
+  - A `title`
+  - A list of **Question** objects, where:
+    - Each **Question** contains a `questionText`
+    - Each **Question** contains a list of **Answer** objects.
+      - Each **Answer** has an `answerText`.
+
+### Step 1: Define the Data Model
+
+```java
+import java.util.List;
+
+public class Survey {
+    private String title;
+    private List<Question> questions;
+
+    // Getters and setters
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+}
+
+public class Question {
+    private String questionText;
+    private List<Answer> answers;
+
+    // Getters and setters
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+}
+
+public class Answer {
+    private String answerText;
+
+    // Getters and setters
+    public String getAnswerText() {
+        return answerText;
+    }
+
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
+}
+```
+
+### Step 2: Thymeleaf Form for Nested Lists
+
+To handle nested lists, you need to use nested `th:each` loops in your Thymeleaf form, just like you would for a single-level list. Each level needs to have an `index` to maintain the correct structure of the form data.
+
+#### `surveyForm.html`
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Survey Form</title>
+</head>
+<body>
+
+<h2>Survey Form</h2>
+
+<!-- Start the form -->
+<form action="#" th:action="@{/submitSurvey}" th:object="${survey}" method="post">
+
+    <!-- Survey Title -->
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" th:field="*{title}" />
+    </div>
+
+    <!-- Questions List -->
+    <div th:each="question, questionStat : ${survey.questions}">
+        <h3>Question <span th:text="${questionStat.index + 1}"></span></h3>
+
+        <div>
+            <label>Question Text:</label>
+            <input type="text" th:field="*{questions[__${questionStat.index}__].questionText}" />
+        </div>
+
+        <!-- Answers List (Nested List) -->
+        <div th:each="answer, answerStat : ${question.answers}">
+            <label>Answer <span th:text="${answerStat.index + 1}"></span>:</label>
+            <input type="text" th:field="*{questions[__${questionStat.index}__].answers[__${answerStat.index}__].answerText}" />
+        </div>
+
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+
+</form>
+
+</body>
+</html>
+```
+
+### Key Points:
+
+1. **`th:object="${survey}"`**: This binds the form to the `Survey` object, so all the form fields will be populated from this object and submitted back to it.
+2. **`th:each="question, questionStat : ${survey.questions}"`**: This loop goes through the list of `questions`.
+3. **`th:field="*{questions[__${questionStat.index}__].questionText}"`**: This binds the input field to the `questionText` of each `Question` object, using the `index` from `questionStat` to handle multiple questions.
+4. **Nested `th:each` for answers**: Inside the `Question` loop, there is another loop `th:each="answer, answerStat : ${question.answers}"` for iterating through the list of `answers`.
+5. **`th:field="*{questions[__${questionStat.index}__].answers[__${answerStat.index}__].answerText}"`**: This binds the input field to the `answerText` of each `Answer` object within the nested list.
+
+### Step 3: Controller to Handle Form Submission
+
+Here’s how the Spring Boot controller would process the form submission:
+
+```java
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+
+@Controller
+public class SurveyController {
+
+    @GetMapping("/surveyForm")
+    public String showForm(Model model) {
+        // Create a survey with two empty questions, each with two empty answers
+        Survey survey = new Survey();
+        Question question1 = new Question();
+        question1.setAnswers(List.of(new Answer(), new Answer()));
+
+        Question question2 = new Question();
+        question2.setAnswers(List.of(new Answer(), new Answer()));
+
+        survey.setQuestions(List.of(question1, question2));
+
+        model.addAttribute("survey", survey);
+        return "surveyForm"; // Return the form page
+    }
+
+    @PostMapping("/submitSurvey")
+    public String submitSurvey(@ModelAttribute Survey survey, Model model) {
+        // Print out the submitted data for testing
+        System.out.println("Title: " + survey.getTitle());
+
+        for (Question question : survey.getQuestions()) {
+            System.out.println("Question: " + question.getQuestionText());
+            for (Answer answer : question.getAnswers()) {
+                System.out.println("Answer: " + answer.getAnswerText());
+            }
+        }
+
+        // Add the submitted data to the model for display on the result page
+        model.addAttribute("submittedSurvey", survey);
+        return "result"; // Display result page (create this page as needed)
+    }
+}
+```
+
+### Step 4: Result Page to Display Submitted Data
+
+#### `result.html`
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Survey Results</title>
+</head>
+<body>
+
+<h2>Survey Results</h2>
+
+<!-- Display the title of the survey -->
+<div>
+    <label>Title:</label>
+    <span th:text="${submittedSurvey.title}"></span>
+</div>
+
+<!-- Display the questions and answers -->
+<div th:each="question : ${submittedSurvey.questions}">
+    <h3>Question</h3>
+    <div>
+        <label>Question Text:</label>
+        <span th:text="${question.questionText}"></span>
+    </div>
+
+    <div th:each="answer : ${question.answers}">
+        <label>Answer:</label>
+        <span th:text="${answer.answerText}"></span>
+    </div>
+</div>
+
+</body>
+</html>
+```
+
+### Summary
+
+- **Nested lists**: In Thymeleaf, you handle nested lists using nested `th:each` loops. The field names are dynamically created with proper indexing (e.g., `questions[0].answers[0].answerText`).
+- **Form binding**: Spring MVC will automatically bind the form data to the nested lists using `@ModelAttribute`.
+- **Form submission**: The nested structure will be correctly sent and mapped to your data model during form submission.
+
+Let me know if you need more information or additional examples!

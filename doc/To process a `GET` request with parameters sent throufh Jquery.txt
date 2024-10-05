@@ -1,0 +1,122 @@
+To process a `GET` request with parameters sent via jQuery `$.ajax()`, you can follow the steps below. Spring Boot will handle the request parameters and process them accordingly.
+
+### 1. Spring Boot Controller to Handle GET Request with Parameters
+
+Create a Spring Boot REST controller that accepts `GET` requests with parameters.
+
+#### Controller Code
+
+```java
+package com.example.demo.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api")
+public class ApiController {
+
+    // Handle GET request to /api/getData
+    @GetMapping("/getData")
+    public ResponseEntity<Map<String, Object>> getData(
+            @RequestParam String param1,
+            @RequestParam String param2) {
+
+        // Process the request parameters
+        Map<String, Object> response = new HashMap<>();
+        response.put("param1", param1);
+        response.put("param2", param2);
+        response.put("message", "Received parameters successfully");
+
+        // Return a JSON response
+        return ResponseEntity.ok(response);
+    }
+}
+```
+
+### Explanation:
+- **`@GetMapping("/getData")`**: Maps the `/getData` endpoint to handle `GET` requests.
+- **`@RequestParam`**: This annotation binds request parameters (query parameters) to method arguments. In this case, it binds `param1` and `param2` from the request URL.
+- **ResponseEntity**: The controller returns a `ResponseEntity` with a JSON response that contains the parameters received.
+
+### 2. jQuery AJAX GET Request
+
+Now, on the front-end side, you can use jQuery to send the `GET` request and pass parameters as query strings.
+
+#### Example jQuery AJAX Request
+
+```javascript
+$(document).ready(function() {
+    $('#getDataButton').click(function() {
+        // Get parameters from input fields
+        var param1 = $('#param1').val();
+        var param2 = $('#param2').val();
+
+        // Make AJAX GET request with parameters
+        $.ajax({
+            url: '/api/getData',  // Spring Boot endpoint
+            type: 'GET',          // HTTP method
+            data: {               // Query parameters sent to the backend
+                param1: param1,
+                param2: param2
+            },
+            success: function(response) {
+                // Handle success response
+                console.log(response);
+                alert('Response: ' + response.message);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Handle error response
+                console.log('Error: ' + errorThrown);
+            }
+        });
+    });
+});
+```
+
+### 3. HTML Form (Optional)
+
+Here's a simple HTML page with input fields and a button to trigger the AJAX request:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX GET Request</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Send GET Request</h2>
+        <label for="param1">Parameter 1:</label>
+        <input type="text" id="param1" name="param1"><br><br>
+        <label for="param2">Parameter 2:</label>
+        <input type="text" id="param2" name="param2"><br><br>
+        <button id="getDataButton">Get Data</button>
+    </div>
+
+    <script src="/path/to/your/ajax.js"></script> <!-- Include the jQuery AJAX script here -->
+</body>
+</html>
+```
+
+### 4. Example URL Format
+
+The URL that the jQuery `$.ajax()` function sends to the Spring Boot controller will look like this:
+
+```
+/api/getData?param1=value1&param2=value2
+```
+
+### Summary:
+
+- **Backend (Spring Boot)**: Create a `@RestController` with a method that handles `GET` requests using `@GetMapping`. Use `@RequestParam` to retrieve query parameters.
+- **Front-end (jQuery)**: Use `$.ajax()` to send a `GET` request with parameters to the backend.
+- **HTML Form**: Provide input fields for users to input data and trigger the request.
+
+This setup allows Spring Boot to process the request and return a JSON response back to the frontend.

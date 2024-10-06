@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Select the block having id as 'mainContent' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
+		 defined in pageTemplate.html under fragments folder. The content should show up as the main content. 
+		 Since all styles, navigation, and page layout have been defined in the pageTemplate fragment, we only need to 
+		 focus on the main content construction. In addtion, page specific css links and scripts can be added. 
+	-->
+<th:block
+	th:replace="fragments/pageTemplate :: pageTemplate(title='Modal Search Page', pageId='modalSearchPage', pageSpecificCSSLinks=~{:: link}, pageSpecificScripts=~{::script}, content=~{:: #mainContent})">
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/sampleStyle.css}" />
+
+	<th:block id="mainContent">
+		<div class="container mt-5">
+			<h2>Search in Modal Window</h2>
+			<!-- Button to open modal -->
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+				Open Search
+			</button>
+		</div>
+
+		<!-- Bootstrap Modal -->
+		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="searchModalLabel">Search</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="searchForm">
+							<div class="form-group">
+								<label for="searchTerm">Search Term</label>
+								<input type="text" class="form-control" id="searchTerm" name="searchTerm"
+									placeholder="Enter search term">
+							</div>
+							<button type="button" class="btn btn-primary" id="searchBtn">Search</button>
+						</form>
+
+						<!-- Search Results Table -->
+						<table class="table mt-3">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Result</th>
+								</tr>
+							</thead>
+							<tbody id="searchResults">
+								<!-- Results will be populated here -->
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<script>
+		$(document).ready(function () {
+			
+			url = "[[@{'/api/modalSearch'}]]";
+			
+			// Trigger search on button click
+			$('#searchBtn').on('click', function () {
+				let searchTerm = $('#searchTerm').val();
+
+				if (searchTerm) {
+					$.ajax({
+						url: url,
+						method: 'GET',
+						data: {query: searchTerm},
+						success: function (response) {
+							// Empty previous results
+							$('#searchResults').empty();
+
+							// Populate results in the table
+							if (response.length > 0) {
+								response.forEach(function (item, index) {
+									$('#searchResults').append(`
+		                                    <tr>
+		                                        <td>${index + 1}</td>
+		                                        <td>${item}</td>
+		                                    </tr>
+		                                `);
+								});
+							} else {
+								$('#searchResults').append(`
+		                                <tr>
+		                                    <td colspan="2">No results found</td>
+		                                </tr>
+		                            `);
+							}
+						},
+						error: function (error) {
+							console.log('Error fetching search results:', error);
+						}
+					});
+				} else {
+					alert('Please enter a search term.');
+				}
+			});
+		});
+	</script>
+</th:block>
+
+</html>

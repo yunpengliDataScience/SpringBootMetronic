@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -63,5 +66,14 @@ public class RestDataController {
 		// If no validation errors
 		response.put("success", true);
 		return response;
+	}
+
+	@GetMapping("/modalSearch")
+	public List<String> search(@RequestParam("query") String query) {
+
+		List<String> data = Arrays.asList("Apple", "Banana", "Orange", "Mango", "Grapes");
+		// Filter data based on the search query
+		return data.stream().filter(item -> item.toLowerCase().contains(query.toLowerCase()))
+				.collect(Collectors.toList());
 	}
 }

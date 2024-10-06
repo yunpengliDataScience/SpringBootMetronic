@@ -464,6 +464,12 @@ public class DemoController {
 
 		return "pages/modalPage";
 	}
+	
+	@GetMapping("/forms/modalSearchPage")
+	public String modalSearchPage(Model model, HttpServletRequest request) {
+
+		return "pages/modalSearchPage";
+	}
 
 	@GetMapping("/forms/samplePage")
 	public String samplePage(Model model, HttpServletRequest request) {

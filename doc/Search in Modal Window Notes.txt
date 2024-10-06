@@ -1,0 +1,162 @@
+To move the search functionality into a modal window with the search button inside the modal, and display the search results in a table within the modal, here's how you can refactor the previous example.
+
+### 1. Front-End (HTML with Bootstrap & jQuery)
+
+#### a. HTML Page with Modal and Search Button
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Modal Example</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Search Example</h2>
+    <!-- Button to open modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+        Open Search
+    </button>
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="searchTerm">Search Term</label>
+                        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter search term">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="searchBtn">Search</button>
+                </form>
+
+                <!-- Search Results Table -->
+                <table class="table mt-3">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchResults">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Trigger search on button click
+        $('#searchBtn').on('click', function() {
+            let searchTerm = $('#searchTerm').val();
+            
+            if (searchTerm) {
+                $.ajax({
+                    url: '/search',
+                    method: 'GET',
+                    data: { query: searchTerm },
+                    success: function(response) {
+                        // Empty previous results
+                        $('#searchResults').empty();
+                        
+                        // Populate results in the table
+                        if (response.length > 0) {
+                            response.forEach(function(item, index) {
+                                $('#searchResults').append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item}</td>
+                                    </tr>
+                                `);
+                            });
+                        } else {
+                            $('#searchResults').append(`
+                                <tr>
+                                    <td colspan="2">No results found</td>
+                                </tr>
+                            `);
+                        }
+                    },
+                    error: function(error) {
+                        console.log('Error fetching search results:', error);
+                    }
+                });
+            } else {
+                alert('Please enter a search term.');
+            }
+        });
+    });
+</script>
+</body>
+</html>
+```
+
+### 2. Spring Boot Controller
+
+This remains the same as before. The backend will handle the search request and return the results in JSON format.
+
+```java
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+public class SearchController {
+
+    private List<String> data = Arrays.asList("Apple", "Banana", "Orange", "Mango", "Grapes");
+
+    @GetMapping("/search")
+    public List<String> search(@RequestParam("query") String query) {
+        // Filter data based on the search query
+        return data.stream()
+                   .filter(item -> item.toLowerCase().contains(query.toLowerCase()))
+                   .collect(Collectors.toList());
+    }
+}
+```
+
+### 3. Key Changes
+
+#### a. Search Button in Modal
+- The **search button** has been moved inside the modal.
+- When the user clicks the button, the search request is triggered via jQuery, and results are appended to a table inside the modal.
+
+#### b. Table for Search Results
+- Instead of appending search results as list items, the results are now displayed in a table.
+- The table includes two columns: one for the index and one for the actual search result.
+
+#### c. Modal Initialization
+- The modal is triggered by the "Open Search" button, which allows the search process to occur within the modal window.
+
+### 4. Process Flow
+1. User clicks the "Open Search" button to open the modal.
+2. User enters a search term and clicks the "Search" button inside the modal.
+3. An AJAX request is sent to the backend, and the search results are displayed in a table within the modal.
+4. If no results are found, a message is shown in the table.
+
+This setup keeps the search functionality encapsulated within the modal, and the results are presented in a structured table format.

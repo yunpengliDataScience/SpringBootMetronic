@@ -137,13 +137,13 @@
 						
 						// Construct a HTML template for the new row.  The field values are also inserted.
 						var newRow = `<tr>
-			                        <td><input type="hidden" name="subFormList[${rowCount}].field1" value="${field1}">${field1}</td>
-			                        <td><input type="hidden" name="subFormList[${rowCount}].field2" value="${field2}">${field2}</td>
-			                        <td>
-			                            <button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
-			                            <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
-			                        </td>
-			                    </tr>`;
+				                        <td><input type="hidden" name="subFormList[${rowCount}].field1" value="${field1}">${field1}</td>
+				                        <td><input type="hidden" name="subFormList[${rowCount}].field2" value="${field2}">${field2}</td>
+				                        <td>
+				                            <button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
+				                            <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
+				                        </td>
+				                      </tr>`;
 						
 						// Append the new row to the table
 						$('#subFormTable tbody').append(newRow);

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Select the block having id as 'mainContent' here in this page and pass it as a parameter to the fragement named 'pageTemplate'
+		 defined in pageTemplate.html under fragments folder. The content should show up as the main content. 
+		 Since all styles, navigation, and page layout have been defined in the pageTemplate fragment, we only need to 
+		 focus on the main content construction. In addtion, page specific css links and scripts can be added. 
+	-->
+<th:block
+	th:replace="fragments/pageTemplate :: pageTemplate(title='Main Form', pageId='modalDynamicFormPage', pageSpecificCSSLinks=~{:: link}, pageSpecificScripts=~{::script}, content=~{:: #mainContent})">
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/sampleStyle.css}" />
+
+	<th:block id="mainContent">
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-12">
+					<h1>Demostration of Adding, Modifying, and Saving Records in a Dynamic List By Modal Form</h1>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row text-center">
+				<div class="col-12">
+					<h1>Main Form</h1>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-12">
+					<!-- Main Form -->
+					<form id="mainForm" th:action="@{/forms/submitModalDynamicForm}" th:object="${mainForm}" method="post" class = "card p-2">
+						<!-- Main form field -->
+						<div class="form-group">
+							<label for="mainInput" class="col-form-label"><h3>Form Name (Main Input):</h3></label>
+							<input type="text" class="form-control" id="mainInput" name="mainInput"
+								th:value="${mainForm.mainInput}" required>
+						</div>
+		
+						<!-- Button to open modal window -->
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#subFormModal" id="addNew">
+							Add a New Record
+						</button>
+		
+						<!-- Table to show the records loaded from the backend and added dynamically -->
+						<h3 class="mt-4">SubForm Records:</h3>
+						<table class="table table-bordered" id="subFormTable">
+							<thead>
+								<tr>
+									<th>Field 1</th>
+									<th>Field 2</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Loop through subFormList to render existing records -->
+								<tr th:each="subForm, iterStat : ${mainForm.subFormList}">
+									<td>
+										<input type="hidden" th:field="*{subFormList[__${iterStat.index}__].field1}"/>
+										[[${subForm.field1}]]								
+									</td>
+									<td>
+										<input type="hidden" th:field="*{subFormList[__${iterStat.index}__].field2}"/>
+										[[${subForm.field2}]]
+									</td>
+									
+									<td>
+										<button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
+										<button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+		
+						<!-- Main form submit -->
+						<button type="submit" class="btn btn-success mt-3">Submit Main Form</button>
+					</form>
+				</div>
+			</div>
+			
+			
+			<!-- Modal window for sub form -->
+			<div class="modal fade" id="subFormModal" tabindex="-1" role="dialog" aria-labelledby="subFormModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="subFormModalLabel">Sub Form</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<!-- Sub-form fields -->
+							<div class="form-group">
+								<label for="field1">Field 1</label>
+								<input type="text" class="form-control" id="field1" required>
+							</div>
+							<div class="form-group">
+								<label for="field2">Field 2</label>
+								<input type="text" class="form-control" id="field2" required>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							<button type="button" id="saveSubForm" class="btn btn-primary">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</th:block>
+
+	<script>
+		
+		// If editIndex is -1, it indicates a new row will be added to the table from the modal form.
+		var editIndex = -1;
+
+		$(document).ready(function () {
+			
+			// Transfer sub form data from modal to the row of the main form table when the save button of the modal form is clicked.
+			$('#saveSubForm').on('click', function () {
+				
+				// Retrieve the field values from the modal form.
+				var field1 = $('#field1').val();
+				var field2 = $('#field2').val();
+
+				if (field1 && field2) {
+					
+					// If editIndex is -1, it indicates a new row will be added to the table from the modal form.
+					// Otherwise, the editIndex should be the row index of existing data to be edited.
+					if (editIndex === -1) {
+						
+						// Get the row count of the table in the main form so that it can be used as index subscript for referencing index position of the dynamic list (subFormList).
+						var rowCount = $('#subFormTable tbody tr').length;
+						
+						// Construct a HTML template for the new row.  The field values are also inserted.
+						var newRow = `<tr>
+			                        <td><input type="hidden" name="subFormList[${rowCount}].field1" value="${field1}">${field1}</td>
+			                        <td><input type="hidden" name="subFormList[${rowCount}].field2" value="${field2}">${field2}</td>
+			                        <td>
+			                            <button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
+			                            <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
+			                        </td>
+			                    </tr>`;
+						
+						// Append the new row to the table
+						$('#subFormTable tbody').append(newRow);
+						
+					} else {
+						
+						// Edit existing row.
+						// Get the row whose row index equals to the editIndex.
+						var row = $('#subFormTable tbody tr').eq(editIndex);
+						
+						//Find the 1st cell of this row and assign a new HTML template containing the new value to that cell.
+						row.find('td:eq(0)').html(`<input type="hidden" name="subFormList[${editIndex}].field1" value="${field1}">${field1}`);
+						
+						//Find the 2nd cell of this row and assign a new HTML template containing the new value to that cell.
+						row.find('td:eq(1)').html(`<input type="hidden" name="subFormList[${editIndex}].field2" value="${field2}">${field2}`);
+						
+						//Reset the editIndex
+						editIndex = -1;
+					}
+
+					// Clear the form and close the modal after new row is added or existing cells are updated.
+					$('#field1').val('');
+					$('#field2').val('');
+					$('#subFormModal').modal('hide');
+				}
+			});
+
+			// Delete row from table when delete button is clicked.
+			$(document).on('click', '.delete-row', function () {
+				
+				// Get the enclosing row of the delete button and remove it.
+				$(this).closest('tr').remove();
+			});
+
+			// Edit a row in table when edit button is clicked.
+			$(document).on('click', '.edit-row', function () {
+				
+				// Find the row that encloses this edit button.
+				var row = $(this).closest('tr');
+				
+				// Retrieve the field values from the row cells.
+				var field1 = row.find('td:eq(0)').text().trim();
+				var field2 = row.find('td:eq(1)').text().trim();
+
+				// Populate the modal form fields with the values of the row cells.
+				$('#field1').val(field1);
+				$('#field2').val(field2);
+
+				// Keep track of the row index so that it will know where to put back the modified field values.
+				editIndex = row.index();
+				
+				// Show the modal.
+				$('#subFormModal').modal('show');
+			});
+
+			// Reset modal form for adding new record when add new button is clicked.
+			$('#addNew').on('click', function () {
+				editIndex = -1;
+				$('#field1').val('');
+				$('#field2').val('');
+			});
+		});
+	</script>
+</th:block>
+
+</html>

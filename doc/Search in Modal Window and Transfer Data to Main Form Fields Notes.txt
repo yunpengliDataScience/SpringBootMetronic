@@ -1,0 +1,189 @@
+To implement a search in a modal window using Spring Boot, Bootstrap, and jQuery, follow these steps. The modal will display search results in a table, and when the user selects a row or a radio button, the selected data will be copied to the form fields on the main page.
+
+### Key Steps:
+
+1. **Create the Modal Window**: Use Bootstrap to create a modal window.
+2. **Search Functionality**: Implement an AJAX call in jQuery to search and display results in the modal.
+3. **Display Results in Table**: The search results will be shown in a table with a radio button to select a row.
+4. **Transfer Data to Form Fields**: When a row or radio button is clicked, copy the row data to the main form fields.
+
+### Frontend (HTML + Bootstrap + jQuery)
+
+#### Modal Window
+```html
+<!-- Modal Trigger -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+  Search
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="searchModalLabel">Search</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Search Input -->
+        <input type="text" id="searchInput" class="form-control" placeholder="Enter search term">
+        <button class="btn btn-primary mt-2" id="searchBtn">Search</button>
+        
+        <!-- Search Results Table -->
+        <table class="table mt-3" id="searchResults">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Field 1</th>
+              <th>Field 2</th>
+              <th>Field 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Results will be appended here by jQuery -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Page Form -->
+<form>
+  <div class="form-group">
+    <label for="field1">Field 1</label>
+    <input type="text" id="field1" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="field2">Field 2</label>
+    <input type="text" id="field2" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="field3">Field 3</label>
+    <input type="text" id="field3" class="form-control">
+  </div>
+</form>
+```
+
+#### jQuery for Searching and Handling Selection
+```javascript
+$(document).ready(function() {
+    // Handle search button click
+    $('#searchBtn').click(function() {
+        var searchTerm = $('#searchInput').val();
+        
+        // Perform AJAX call to search (adjust URL as needed for your backend)
+        $.ajax({
+            url: '/search', // URL to Spring Boot controller
+            method: 'GET',
+            data: { query: searchTerm },
+            success: function(data) {
+                // Populate the table with results
+                var rows = '';
+                data.forEach(function(item) {
+                    rows += '<tr>' +
+                                '<td><input type="radio" name="selectRow" value="' + item.field1 + ',' + item.field2 + ',' + item.field3 + '"></td>' +
+                                '<td>' + item.field1 + '</td>' +
+                                '<td>' + item.field2 + '</td>' +
+                                '<td>' + item.field3 + '</td>' +
+                            '</tr>';
+                });
+                $('#searchResults tbody').html(rows);
+            },
+            error: function() {
+                alert('Error retrieving search results');
+            }
+        });
+    });
+    
+    // Handle row or radio button click
+    $(document).on('click', 'input[name="selectRow"]', function() {
+        var selectedData = $(this).val().split(',');
+        
+        // Transfer data to form fields on the main page
+        $('#field1').val(selectedData[0]);
+        $('#field2').val(selectedData[1]);
+        $('#field3').val(selectedData[2]);
+        
+        // Close modal after selection
+        $('#searchModal').modal('hide');
+    });
+});
+```
+
+### Backend (Spring Boot)
+
+You’ll need a Spring Boot controller to handle the search functionality. This example assumes you are returning search results as JSON.
+
+#### Controller Example
+```java
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+public class SearchController {
+
+    @GetMapping("/search")
+    public List<SearchResult> search(@RequestParam String query) {
+        // Implement search logic here, e.g., querying the database
+        
+        // Example: Return static search results
+        List<SearchResult> results = new ArrayList<>();
+        results.add(new SearchResult("Data1", "Data2", "Data3"));
+        results.add(new SearchResult("Value1", "Value2", "Value3"));
+        results.add(new SearchResult("Item1", "Item2", "Item3"));
+        
+        return results;
+    }
+}
+```
+
+#### SearchResult Class
+```java
+public class SearchResult {
+    private String field1;
+    private String field2;
+    private String field3;
+
+    public SearchResult(String field1, String field2, String field3) {
+        this.field1 = field1;
+        this.field2 = field2;
+        this.field3 = field3;
+    }
+
+    public String getField1() {
+        return field1;
+    }
+
+    public String getField2() {
+        return field2;
+    }
+
+    public String getField3() {
+        return field3;
+    }
+}
+```
+
+### Explanation:
+1. **Frontend**:
+   - A Bootstrap modal is used for the search window.
+   - The user enters a search term and clicks the search button.
+   - Results are fetched via an AJAX call and populated into a table in the modal.
+   - When a row or radio button is selected, its data is copied to the main page form, and the modal is closed.
+
+2. **Backend**:
+   - The Spring Boot controller listens for GET requests to `/search`.
+   - The query parameter is used to search for relevant results (e.g., from a database or a static list in this case).
+   - The results are returned as a list of JSON objects, which the frontend uses to populate the modal table.
+
+### Notes:
+- Ensure you have the necessary dependencies for jQuery, Bootstrap, and Spring Boot in your project.
+- Adapt the backend search logic to your specific needs (e.g., querying a database or API).
+  

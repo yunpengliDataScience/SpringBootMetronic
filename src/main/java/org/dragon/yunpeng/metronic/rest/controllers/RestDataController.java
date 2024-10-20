@@ -3,6 +3,7 @@ package org.dragon.yunpeng.metronic.rest.controllers;
 import org.dragon.yunpeng.metronic.entities.Category;
 import org.dragon.yunpeng.metronic.entities.SubCategory;
 import org.dragon.yunpeng.metronic.pojos.FormDTO;
+import org.dragon.yunpeng.metronic.pojos.ModalSearchResult;
 import org.dragon.yunpeng.metronic.repositories.CategoryRepository;
 import org.dragon.yunpeng.metronic.repositories.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -76,4 +78,17 @@ public class RestDataController {
 		return data.stream().filter(item -> item.toLowerCase().contains(query.toLowerCase()))
 				.collect(Collectors.toList());
 	}
+	
+	@GetMapping("/modalSearchDataTransfer")
+    public List<ModalSearchResult> modalSearchDataTransfer(@RequestParam String query) {
+        // Implement search logic here, e.g., querying the database
+        
+        // Example: Return static search results
+        List<ModalSearchResult> results = new ArrayList<>();
+        results.add(new ModalSearchResult("Data1", "Data2", "Data3"));
+        results.add(new ModalSearchResult("Value1", "Value2", "Value3"));
+        results.add(new ModalSearchResult("Item1", "Item2", "Item3"));
+        
+        return results;
+    }
 }

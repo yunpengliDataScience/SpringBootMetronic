@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Dropdown on Input Click</title>
+    <!-- Include Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+            display: none; /* Initially hidden */
+        }
+
+        .dropdown-menu.show {
+            display: block; /* Show when necessary */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Input with Dropdown on Click (Simulates Datalist)</h2>
+        <div id="custom-field-container" class="position-relative">
+            <!-- This is where the plugin will create the combined input and dropdown -->
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap 4 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function($) {
+            $.fn.customDatalist = function(options) {
+                // Default settings
+                var settings = $.extend({
+                    textPlaceholder: 'Enter or select',
+                    dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
+                    onValueChange: function(data) {
+                        console.log(data);
+                    }
+                }, options);
+
+                // Create the input field
+                var textInput = $('<input type="text" class="form-control" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="customDatalistInput">');
+
+                // Create the dropdown menu that will show the options
+                var dropdownMenu = $('<div class="dropdown-menu w-100"></div>');
+
+                // Append dropdown options
+                settings.dropdownOptions.forEach(function(option) {
+                    dropdownMenu.append('<a class="dropdown-item" href="#">' + option + '</a>');
+                });
+
+                // Append input and dropdown to the container
+                this.append(textInput).append(dropdownMenu);
+
+                // Show all options whenever the input is clicked
+                textInput.on('click', function() {
+                    dropdownMenu.children('a').show();  // Ensure all options are visible
+                    dropdownMenu.addClass('show');      // Show the dropdown
+                });
+
+                // Handle selecting an option from the dropdown
+                dropdownMenu.on('click', 'a', function(e) {
+                    e.preventDefault();
+                    var selectedOption = $(this).text();
+                    textInput.val(selectedOption);
+                    dropdownMenu.removeClass('show');  // Hide the dropdown after selection
+
+                    // Call the onValueChange callback with the selected option
+                    settings.onValueChange({
+                        text: selectedOption
+                    });
+                });
+
+                // Hide dropdown if clicked outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#custom-field-container').length) {
+                        dropdownMenu.removeClass('show');
+                    }
+                });
+
+                // Maintain chainability
+                return this;
+            };
+        }(jQuery));
+
+        $(document).ready(function() {
+            $('#custom-field-container').customDatalist({
+                textPlaceholder: 'Enter text or select an option',
+                dropdownOptions: ['Admin', 'User', 'Guest', 'Developer', 'Manager'],
+                onValueChange: function(data) {
+                    console.log('Selected value:', data.text);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

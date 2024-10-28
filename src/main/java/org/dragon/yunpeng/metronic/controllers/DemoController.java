@@ -91,8 +91,7 @@ public class DemoController {
 
 		return "pages/dynamicFormEditList";
 	}
-	
-	
+
 	@GetMapping("/forms/dynamicAccordionsPage")
 	public String dynamicAccordionsPage(Model model) {
 
@@ -371,7 +370,7 @@ public class DemoController {
 		model.addAttribute("form", form);
 		return "pages/formDetail";
 	}
-	
+
 	@GetMapping("/forms/horizontal")
 	public String newHorizontalForm(Model model, HttpServletRequest request) {
 
@@ -464,13 +463,13 @@ public class DemoController {
 
 		return "pages/modalPage";
 	}
-	
+
 	@GetMapping("/forms/modalSearchPage")
 	public String modalSearchPage(Model model, HttpServletRequest request) {
 
 		return "pages/modalSearchPage";
 	}
-	
+
 	@GetMapping("/forms/modalSearchDataTransferPage")
 	public String modalSearchDataTransferPage(Model model, HttpServletRequest request) {
 
@@ -482,10 +481,16 @@ public class DemoController {
 
 		return "pages/samplePage";
 	}
-	
+
 	@GetMapping("/forms/ajaxFormSubmissionValidation")
 	public String ajaxFormSubmissionValidationPage(Model model) {
 
 		return "pages/ajaxFormSubmissionValidation";
+	}
+
+	@GetMapping("/forms/inputDropDownComb")
+	public String inputDropDownComb(Model model, HttpServletRequest request) {
+
+		return "pages/inputDropDownCombPage";
 	}
 }

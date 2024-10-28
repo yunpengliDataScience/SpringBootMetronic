@@ -1,0 +1,11 @@
+.dropdown-menu {
+	max-height: 200px;
+	overflow-y: auto;
+	display: none;
+	/* Initially hidden */
+}
+
+.dropdown-menu.show {
+	display: block;
+	/* Show when necessary */
+}

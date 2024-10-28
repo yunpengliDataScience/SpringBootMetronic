@@ -1,3 +1,14 @@
+/* Custom style for the input with dropdown arrow */
+.custom-input-group {
+	position: relative;
+}
+
+/* Add padding to the right to accommodate the dropdown arrow */
+.custom-input {
+	padding-right: 30px;
+	/* Adjust this value based on arrow size */
+}
+
 .dropdown-menu {
 	max-height: 200px;
 	overflow-y: auto;
@@ -8,4 +19,28 @@
 .dropdown-menu.show {
 	display: block;
 	/* Show when necessary */
+}
+
+/* Style for the dropdown arrow (caret) */
+/**/
+.dropdown-arrow {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+
+.input-group .form-control {
+    border-right: 0;
+}
+
+.input-group-append .dropdown-arrow {
+    background-color: white;
+    border-left: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    cursor: pointer;
 }

@@ -15,11 +15,11 @@
 		<div class="container mt-5">
 			<h2>Input with Dropdown on Click (Simulates Datalist)</h2>
 
-			<div id="custom-field-container1" class="position-relative">
+			<div id="custom-field-container1" class="custom-input-group">
 				<!-- This is where the plugin will create the combined input and dropdown -->
 			</div>
 
-			<div id="custom-field-container2" class="position-relative">
+			<div id="custom-field-container2" class="custom-input-group">
 				<!-- This is where the plugin will create the combined input and dropdown -->
 			</div>
 		</div>
@@ -45,9 +45,18 @@
 				// Create the label. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
 				var label = $('<label for="' + settings.inputId + '" class="col-form-label">' + settings.label +'</label>');
 				
+				// Create the input group
+				var inputGroup = $('<div class="input-group"></div>');
+				
+				// Create the dropdown arrow button
+				var dropdownButton = $('<div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>');
+				
 				// Create the input field. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
-				var textInput = $('<input type="text" class="form-control" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '">');
+				var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '">');
 
+				// Create the dropdown arrow (caret)
+				//var dropdownArrow = $('<span class="dropdown-arrow">&#9660;</span>'); // Unicode for down arrow (▼)
+				
 				// Create the dropdown menu that will show the options. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
 				var dropdownMenu = $('<div class="dropdown-menu w-100" id=' + settings.dropDownId + '></div>');
 
@@ -56,8 +65,12 @@
 					dropdownMenu.append('<a class="dropdown-item" href="#">' + option + '</a>');
 				});
 
+				// Append label, input, dropdown arrow, and dropdown menu to the container
+				inputGroup.append(textInput).append(dropdownButton);
+				this.append(label).append(inputGroup).append(dropdownMenu);
+				
 				// Append input and dropdown to the container
-				this.append(label).append(textInput).append(dropdownMenu);
+				//this.append(label).append(textInput).append(dropdownArrow).append(dropdownMenu);
 
 				// Show all options whenever the input is clicked
 				textInput.on('click', function () {

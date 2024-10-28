@@ -432,3 +432,207 @@ $(document).on('click', function(e) {
 - The `!` operator is used to **invert** the result, so the code inside the `if` block only runs when the click occurs **outside** the `#custom-field-container`.
 - This pattern is commonly used to hide dropdowns, modal windows, or other UI elements when the user clicks outside of them.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+The issue is likely with the positioning of the arrow element. We need to make sure that the arrow is placed inside the input field and appears as part of the input box itself. This can be achieved by adjusting the positioning and using Bootstrap's input group feature to make the arrow appear correctly.
+
+Here’s an updated solution that ensures the arrow is properly aligned within the input box:
+
+### Updated Code with Correct Arrow Positioning:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combo Input with Dropdown Arrow</title>
+    <!-- Include Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Ensure the input group structure is respected */
+        .input-group .form-control {
+            border-right: 0;
+        }
+
+        .input-group-append .dropdown-arrow {
+            background-color: white;
+            border-left: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+            display: none; /* Initially hidden */
+        }
+
+        .dropdown-menu.show {
+            display: block; /* Show when necessary */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Combo Input with Dropdown Arrow</h2>
+        <div id="custom-field-container"></div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap 4 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function($) {
+            $.fn.customDatalist = function(options) {
+                // Default settings
+                var settings = $.extend({
+                    textPlaceholder: 'Enter or select',
+                    dropdownOptions: ['Loading...'],
+                    ajaxUrl: '',  // URL to fetch options from
+                    onValueChange: function(data) {
+                        console.log(data);
+                    }
+                }, options);
+
+                // Create the input group
+                var inputGroup = $('<div class="input-group"></div>');
+                var textInput = $('<input type="text" class="form-control" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="customDatalistInput">');
+
+                // Create the dropdown arrow button
+                var dropdownButton = $('<div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>');
+
+                // Create the dropdown menu
+                var dropdownMenu = $('<div class="dropdown-menu w-100"></div>');
+
+                // Function to update dropdown with new options
+                function updateDropdown(options) {
+                    dropdownMenu.empty();  // Clear existing options
+                    options.forEach(function(option) {
+                        dropdownMenu.append('<a class="dropdown-item" href="#">' + option + '</a>');
+                    });
+                }
+
+                // Append input, dropdown arrow, and dropdown menu to the container
+                inputGroup.append(textInput).append(dropdownButton);
+                this.append(inputGroup).append(dropdownMenu);
+
+                // Show dropdown when the input or arrow is clicked
+                textInput.on('click', function() {
+                    dropdownMenu.addClass('show');  // Show dropdown
+                });
+
+                dropdownButton.on('click', function() {
+                    dropdownMenu.addClass('show');  // Show dropdown
+                    textInput.focus();  // Set focus on input
+                });
+
+                // Handle selecting an option from the dropdown
+                dropdownMenu.on('click', 'a', function(e) {
+                    e.preventDefault();
+                    var selectedOption = $(this).text();
+                    textInput.val(selectedOption);
+                    dropdownMenu.removeClass('show');  // Hide the dropdown after selection
+
+                    // Trigger the onValueChange callback
+                    settings.onValueChange({
+                        text: selectedOption
+                    });
+                });
+
+                // Hide dropdown if clicked outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#custom-field-container').length) {
+                        dropdownMenu.removeClass('show');
+                    }
+                });
+
+                // Function to fetch options via AJAX
+                function fetchOptions(query) {
+                    $.ajax({
+                        url: settings.ajaxUrl,
+                        method: 'GET',
+                        data: { search: query },  // Send search query if necessary
+                        success: function(response) {
+                            // Assume response is an array of options
+                            settings.dropdownOptions = response;
+                            updateDropdown(response);  // Update dropdown with new options
+                        },
+                        error: function() {
+                            console.error('Error fetching options');
+                        }
+                    });
+                }
+
+                // Trigger AJAX to fetch options when user types in the input
+                textInput.on('input', function() {
+                    var query = $(this).val();
+                    fetchOptions(query);  // Fetch new options based on input
+                });
+
+                // Initialize with default options
+                updateDropdown(settings.dropdownOptions);
+
+                // Maintain chainability
+                return this;
+            };
+        }(jQuery));
+
+        // Usage of the plugin with AJAX URL
+        $(document).ready(function() {
+            $('#custom-field-container').customDatalist({
+                textPlaceholder: 'Search for roles',
+                ajaxUrl: '/get-options',  // The server URL that provides options
+                onValueChange: function(data) {
+                    console.log('Selected value:', data.text);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### Key Adjustments:
+
+1. **Bootstrap Input Group**:
+   - The input field and the dropdown arrow are now part of a Bootstrap input group (`input-group`), which allows them to be combined visually as one element.
+   
+   ```html
+   <div class="input-group"></div>
+   ```
+
+2. **Input Group Append**:
+   - The dropdown arrow is placed inside an `input-group-append` element, which Bootstrap uses to append elements like buttons or icons to input fields. This ensures that the arrow stays next to the input field and appears as part of the input.
+   
+   ```html
+   <div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>
+   ```
+
+3. **CSS Adjustments**:
+   - The `input-group .form-control` class removes the right border of the input field so it seamlessly connects with the dropdown arrow.
+   - The `.dropdown-arrow` is styled to align with the input field, using flexbox to center it vertically and `cursor: pointer` to indicate it’s clickable.
+
+   ```css
+   .input-group .form-control {
+       border-right: 0;
+   }
+
+   .input-group-append .dropdown-arrow {
+       background-color: white;
+       border-left: 0;
+       display: flex;
+       align-items: center;
+       padding: 0 10px;
+       cursor: pointer;
+   }
+   ```
+
+4. **Dropdown Menu**:
+   - The dropdown menu still functions as before, but now the arrow is clickable and properly aligned inside the input field.
+
+### Result:
+The dropdown arrow will now appear **inside** the input box, to the right, and when clicked, it will show the dropdown options. This provides a clear visual cue that the input field has selectable options while maintaining proper styling with Bootstrap.

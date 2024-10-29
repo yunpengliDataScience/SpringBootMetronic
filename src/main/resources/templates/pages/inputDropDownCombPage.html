@@ -13,15 +13,52 @@
 
 	<th:block id="mainContent">
 		<div class="container mt-5">
-			<h2>Input with Dropdown on Click (Simulates Datalist)</h2>
+			<h2>Input And Dropdown Comb (Simulates Datalist)</h2>
 
-			<div id="custom-field-container1" class="custom-input-group">
-				<!-- This is where the plugin will create the combined input and dropdown -->
-			</div>
-
-			<div id="custom-field-container2" class="custom-input-group">
-				<!-- This is where the plugin will create the combined input and dropdown -->
-			</div>
+			<!-- Display success message if present -->
+		    <div th:if="${successMessage}" class="alert alert-solid-success alert-bold" role="alert">
+		        <div th:text="${successMessage}" class="alert-text"></div>
+		        <div class="alert-close">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true"><i class="la la-close"></i></span>
+					</button>
+				</div>
+		    </div>
+							    
+			<form th:action="@{/forms/submitInputDropDownCombForm}" th:object="${userAndFruit}" method="post">
+				<div id="custom-field-container1" class="custom-input-group">
+					<!-- This is where the plugin will create the combined input and dropdown -->
+					
+					<!-- The purpose of the hidden input is to:
+					 1. Preserve user selected/entered input data if backend validation fails. 
+					 2. Initialize the visible form field by existing data. 
+					 -->
+					<input id='hiddenUser' type="hidden" th:field="*{user}">
+				</div>
+				
+				<!-- Display validation error for userName -->
+		        <div th:if="${#fields.hasErrors('user')}" class="text-danger">
+		            <p th:errors="*{user}">User error</p>
+		        </div>
+	
+				<div id="custom-field-container2" class="custom-input-group">
+					<!-- This is where the plugin will create the combined input and dropdown -->
+					
+					<!-- The purpose of the hidden input is to:
+					 1. Preserve user selected/entered input data if backend validation fails. 
+					 2. Initialize the visible form field by existing data. 
+					 -->
+					<input id='hiddenFruit' type="hidden" th:field="*{fruit}">
+				</div>
+				<!-- Display validation error for fruit -->
+		        <div th:if="${#fields.hasErrors('fruit')}" class="text-danger">
+		            <p th:errors="*{fruit}">Fruit selection error</p>
+		        </div>
+				
+				<br>
+				<!-- Submit button -->
+        		<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
 		</div>
 	</th:block>
 
@@ -32,8 +69,9 @@
 		//------------------------------------------------------------------------------------------------------------------------------------
 		(function ($) {
 			$.fn.customDatalist = function (options) {
-				// Default settings
+				// Default settings. The options are merged into settings by $.extend()
 				var settings = $.extend({
+					containerId: '',
 					label: 'Label',
 					textPlaceholder: 'Enter or select',
 					dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
@@ -51,8 +89,13 @@
 				// Create the dropdown arrow button
 				var dropdownButton = $('<div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>');
 				
+				// Get the input value from the nested hidden field.  Such input value will be used as the default value in the input field.
+				var inputValue = $(settings.containerId).find('input[type="hidden"]').val().trim();
+				
+				console.log('inputValue='+inputValue+'|');
+				
 				// Create the input field. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
-				var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '">');
+				var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '" name="' + settings.inputName + '" value="' + inputValue +'">');
 
 				// Create the dropdown arrow (caret)
 				//var dropdownArrow = $('<span class="dropdown-arrow">&#9660;</span>'); // Unicode for down arrow (▼)
@@ -82,7 +125,9 @@
 				dropdownMenu.on('click', 'a', function (e) {
 					e.preventDefault(); // Ignore default link clicking behavior
 					
+					// Get the selected option text
 					var selectedOption = $(this).text();
+					
 					textInput.val(selectedOption);  // Copy the value of the seletion to input box
 					dropdownMenu.removeClass('show');  // Hide the dropdown after selection
 
@@ -100,6 +145,19 @@
 						dropdownMenu.removeClass('show');
 					}
 				});
+				
+				// Upon form submission, copy the input text value to the hidden field and submit the hidden field to prevent duplicated values submitted.
+				// The purpose of the hidden input is to 1. Preserve user selected/entered input data if backend validation fails. 2. Initialize the visible form field by existing data.
+				$('form').on('submit', function () {
+					var visibleValue = textInput.val();
+					
+					console.log('visibleValue='+visibleValue);
+					//alert('input[name="' + settings.inputName + '"]' + visibleValue);
+					
+					//Copy input text value to hidden field and only submit the hidden field to prevent duplicated values submitted; otherwise, a concat string with seperated by commas will appear in the submitted value.
+					$('input[type="hidden"][name="' + settings.inputName + '"]').val(visibleValue);
+					$('input[name="' + settings.inputName + '"]:not([type="hidden"])').remove();
+				});
 
 				// Maintain chainability
 				return this;
@@ -107,7 +165,7 @@
 		}(jQuery));
 
 		//-----------------------------------------------------------------------------------------------------------------------
-		//Usage: Attach Jquery plug-in to component place holder
+		//Usage: Attach Jquery plug-in to the component place holder
 		//-----------------------------------------------------------------------------------------------------------------------
 		$(document).ready(function () {
 
@@ -115,9 +173,10 @@
 				containerId: '#custom-field-container1',
 				label: 'User:',
 				inputId: 'inputDropDownCombo1',
+				inputName: 'user',
 				dropDownId: 'dropDownData1',
 				textPlaceholder: 'Enter text or select an option',
-				dropdownOptions: ['Admin', 'User', 'Guest', 'Developer', 'Manager'],
+				dropdownOptions: ['', 'Admin', 'User', 'Guest', 'Developer', 'Manager'],
 				onValueChange: function (data) {
 					console.log('Selected value:', data.text);
 				}
@@ -127,9 +186,10 @@
 				containerId: '#custom-field-container2',
 				label: 'Fruit:',
 				inputId: 'inputDropDownCombo2',
+				inputName: 'fruit',
 				dropDownId: 'dropDownData2',
 				textPlaceholder: 'Enter text or select an option',
-				dropdownOptions: ['Apple', 'Pear', 'Grape', 'Cherry', 'banana'],
+				dropdownOptions: ['', 'Apple', 'Pear', 'Grape', 'Cherry', 'banana'],
 				onValueChange: function (data) {
 					console.log('Selected value:', data.text);
 				}

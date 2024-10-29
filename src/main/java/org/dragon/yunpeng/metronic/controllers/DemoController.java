@@ -19,12 +19,14 @@ import org.dragon.yunpeng.metronic.entities.Form;
 import org.dragon.yunpeng.metronic.entities.Item;
 import org.dragon.yunpeng.metronic.entities.SubCategory;
 import org.dragon.yunpeng.metronic.pojos.FormListDto;
+import org.dragon.yunpeng.metronic.pojos.UserAndFruit;
 import org.dragon.yunpeng.metronic.pojos.XMLFile;
 import org.dragon.yunpeng.metronic.repositories.CategoryRepository;
 import org.dragon.yunpeng.metronic.repositories.ItemRepository;
 import org.dragon.yunpeng.metronic.repositories.SubCategoryRepository;
 import org.dragon.yunpeng.metronic.services.IFileService;
 import org.dragon.yunpeng.metronic.services.IFormService;
+import org.dragon.yunpeng.metronic.utils.UserAndFruitValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,9 @@ public class DemoController {
 
 	@Autowired
 	private ItemRepository itemRepository;
+	
+	@Autowired
+	private UserAndFruitValidator userAndFruitValidator;
 
 	@GetMapping("/")
 	public String redirect() {
@@ -491,6 +496,26 @@ public class DemoController {
 	@GetMapping("/forms/inputDropDownComb")
 	public String inputDropDownComb(Model model, HttpServletRequest request) {
 
+		model.addAttribute("userAndFruit", new UserAndFruit());
+		return "pages/inputDropDownCombPage";
+	}
+
+	@PostMapping("/forms/submitInputDropDownCombForm")
+	public String submitForm(@ModelAttribute("userAndFruit") UserAndFruit userAndFruit, BindingResult bindingResult,
+			Model model) {
+
+		System.out.println("userAndFruit: " + userAndFruit);
+		
+		userAndFruitValidator.validate(userAndFruit, bindingResult);
+		
+		// If there are validation errors, return to the same form
+		if (bindingResult.hasErrors()) {
+			return "pages/inputDropDownCombPage"; // Return to form page with errors
+		}
+
+		// If no validation errors, process the form (e.g., save to database)
+		model.addAttribute("successMessage", "Form has been successfully submitted.");
+		
 		return "pages/inputDropDownCombPage";
 	}
 }

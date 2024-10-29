@@ -65,10 +65,20 @@
 	<script>
 		
 		//------------------------------------------------------------------------------------------------------------------------------------
-		//Jquery Plugin Definition
+		//Jquery Plugin (customDatalist) Definition
+		//
+		//1. Use $.extend({...}, options) to merge Json objects into settings. The options can be user defined.
+		//2. Use $(...) to create HTML components, such as label, inputGroup, dropdownButton (arrow icon), textInput, and dropdownMenu, and 
+		//	 then assemble them together under the container.
+		//3. Craft the behavior of textInput: Whenever textInput is clicked, show all items in drop-down menu.
+		//4. Craft the behavior of dropdownMenu: Whenever an menu item is clicked, default link behavior is ignored, value of the menu item is
+		//										 transfered to the textInput, and then hide the entire drop-down menu.
+		//5. Craft the behavior of dropdownMenu: Whenever clicking occurs outside the drop-down menu, just hide the entire drop-down menu.
+		//6. Upon form submission, copy the input text value to the hidden field and submit the hidden field to prevent duplicated values submitted.
 		//------------------------------------------------------------------------------------------------------------------------------------
 		(function ($) {
 			$.fn.customDatalist = function (options) {
+				
 				// Default settings. The options are merged into settings by $.extend()
 				var settings = $.extend({
 					containerId: '',
@@ -80,6 +90,10 @@
 					}
 				}, options);
 
+				//-------------------------------------------------------------------------------------------------
+				//Construct the components
+				//-------------------------------------------------------------------------------------------------
+				
 				// Create the label. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
 				var label = $('<label for="' + settings.inputId + '" class="col-form-label">' + settings.label +'</label>');
 				
@@ -92,7 +106,8 @@
 				// Get the input value from the nested hidden field.  Such input value will be used as the default value in the input field.
 				var inputValue = $(settings.containerId).find('input[type="hidden"]').val().trim();
 				
-				console.log('inputValue='+inputValue+'|');
+				// Debug
+				console.log('inputValue=' + inputValue+'|');
 				
 				// Create the input field. Note: $(...) is not only used to select DOM elements but also to create DOM elements.
 				var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '" name="' + settings.inputName + '" value="' + inputValue +'">');
@@ -112,9 +127,11 @@
 				inputGroup.append(textInput).append(dropdownButton);
 				this.append(label).append(inputGroup).append(dropdownMenu);
 				
-				// Append input and dropdown to the container
-				//this.append(label).append(textInput).append(dropdownArrow).append(dropdownMenu);
-
+				
+				//-------------------------------------------------------------------------------------------------
+				//Craft the behaviors of components
+				//-------------------------------------------------------------------------------------------------
+				
 				// Show all options whenever the input is clicked
 				textInput.on('click', function () {
 					dropdownMenu.children('a').show();  // Ensure all options are visible
@@ -135,6 +152,7 @@
 					settings.onValueChange({
 						text: selectedOption  // object with Key: text, Value: selectedOption
 					});
+					
 				});
 
 				// Hide dropdown if clicked outside
@@ -151,7 +169,9 @@
 				$('form').on('submit', function () {
 					var visibleValue = textInput.val();
 					
-					console.log('visibleValue='+visibleValue);
+					// Debug
+					console.log('visibleValue=' + visibleValue);
+					
 					//alert('input[name="' + settings.inputName + '"]' + visibleValue);
 					
 					//Copy input text value to hidden field and only submit the hidden field to prevent duplicated values submitted; otherwise, a concat string with seperated by commas will appear in the submitted value.
@@ -176,7 +196,7 @@
 				inputName: 'user',
 				dropDownId: 'dropDownData1',
 				textPlaceholder: 'Enter text or select an option',
-				dropdownOptions: ['', 'Admin', 'User', 'Guest', 'Developer', 'Manager'],
+				dropdownOptions: ['', 'Admin', 'User', 'Guest', 'Developer', 'Manager'],  //TODO: May use Ajax to prepopulate it.
 				onValueChange: function (data) {
 					console.log('Selected value:', data.text);
 				}
@@ -189,13 +209,14 @@
 				inputName: 'fruit',
 				dropDownId: 'dropDownData2',
 				textPlaceholder: 'Enter text or select an option',
-				dropdownOptions: ['', 'Apple', 'Pear', 'Grape', 'Cherry', 'banana'],
+				dropdownOptions: ['', 'Apple', 'Pear', 'Grape', 'Cherry', 'banana'],  //TODO: May use Ajax to prepopulate it.
 				onValueChange: function (data) {
 					console.log('Selected value:', data.text);
 				}
 			});
 
 		});
+		
 	</script>
 </th:block>
 

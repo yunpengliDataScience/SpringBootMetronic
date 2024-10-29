@@ -636,3 +636,473 @@ Here’s an updated solution that ensures the arrow is properly aligned within t
 
 ### Result:
 The dropdown arrow will now appear **inside** the input box, to the right, and when clicked, it will show the dropdown options. This provides a clear visual cue that the input field has selectable options while maintaining proper styling with Bootstrap.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+To modify your jQuery plugin to handle validation errors, we will add logic to display validation errors in the front-end when the server returns error messages from Spring Boot's validation. We'll assume that the server will return a list of validation errors for specific form fields, and the jQuery plugin will need to display those errors in the appropriate places in the form.
+
+Here’s how you can modify the jQuery plugin to handle validation error handling:
+
+### 1. **Expected Error Response Format (from Server)**
+
+Let's assume the server sends back a JSON response containing field-specific error messages if validation fails. The response might look like this:
+
+```json
+{
+  "errors": {
+    "userName": "Username is required",
+    "fruit": "Fruit selection is required"
+  }
+}
+```
+
+In this case, the `errors` object contains the validation error messages where each key corresponds to a field name.
+
+### 2. **Modify the jQuery Plugin**
+
+Below is a modified version of your plugin, where it accepts validation errors and dynamically displays them:
+
+```javascript
+(function ($) {
+    $.fn.customDatalist = function (options) {
+        // Default settings
+        var settings = $.extend({
+            label: 'Label',
+            textPlaceholder: 'Enter or select',
+            dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
+            inputId: 'customInputId',
+            containerId: '#customContainer',
+            dropDownId: 'customDropdownId',
+            validationErrors: {}, // New: Object to store validation error messages
+            onValueChange: function (data) {
+                console.log(data);
+            }
+        }, options);
+
+        // Create the label
+        var label = $('<label for="' + settings.inputId + '" class="col-form-label">' + settings.label + '</label>');
+        
+        // Create the input group
+        var inputGroup = $('<div class="input-group"></div>');
+        
+        // Create the dropdown arrow button
+        var dropdownButton = $('<div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>');
+        
+        // Create the input field
+        var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '">');
+
+        // Create the dropdown menu
+        var dropdownMenu = $('<div class="dropdown-menu w-100" id=' + settings.dropDownId + '></div>');
+
+        // Create a container for validation errors (New: For error handling)
+        var errorContainer = $('<div class="validation-error text-danger"></div>');
+
+        // Append dropdown options to the dropdownMenu
+        settings.dropdownOptions.forEach(function (option) {
+            dropdownMenu.append('<a class="dropdown-item" href="#">' + option + '</a>');
+        });
+
+        // Append label, input, dropdown arrow, dropdown menu, and error container to the container
+        inputGroup.append(textInput).append(dropdownButton);
+        this.append(label).append(inputGroup).append(dropdownMenu).append(errorContainer);
+
+        // Show all options whenever the input is clicked
+        textInput.on('click', function () {
+            dropdownMenu.children('a').show();  // Ensure all options are visible
+            dropdownMenu.addClass('show');      // Show the dropdown
+        });
+
+        // Handle selecting an option from the dropdown
+        dropdownMenu.on('click', 'a', function (e) {
+            e.preventDefault();  // Ignore default link clicking behavior
+            
+            var selectedOption = $(this).text();
+            textInput.val(selectedOption);  // Copy the value of the selection to input box
+            dropdownMenu.removeClass('show');  // Hide the dropdown after selection
+
+            // Call the onValueChange callback with the selected option
+            settings.onValueChange({
+                text: selectedOption  // object with Key: text, Value: selectedOption
+            });
+
+            // Clear validation error for the field when user makes a selection
+            errorContainer.text('');
+        });
+
+        // Hide dropdown if clicked outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest(settings.containerId).length) {
+                dropdownMenu.removeClass('show');
+            }
+        });
+
+        // New: Function to display validation errors
+        function showValidationErrors(errors) {
+            if (errors[settings.inputId]) {
+                // Display error message for this specific input field
+                errorContainer.text(errors[settings.inputId]);
+            } else {
+                // Clear error message if there's no error for this field
+                errorContainer.text('');
+            }
+        }
+
+        // New: Call the showValidationErrors function with validation errors
+        showValidationErrors(settings.validationErrors);
+
+        // Maintain chainability
+        return this;
+    };
+}(jQuery));
+```
+
+### Explanation of Changes:
+
+1. **`validationErrors` in `settings`:**
+   - We added a new `validationErrors` property in the plugin settings, which will contain any validation error messages returned from the server.
+   - It expects an object where the keys are the field IDs (like `userName`, `fruit`, etc.), and the values are the error messages.
+
+2. **Error Display (`errorContainer`):**
+   - We added a new `div` element, `errorContainer`, below each input field to display validation error messages.
+   - This container will dynamically show or hide error messages depending on the validation results.
+
+3. **`showValidationErrors()` Function:**
+   - This function checks if there is an error for the specific input field. If so, it displays the error message in `errorContainer`; otherwise, it clears the error.
+
+4. **Clearing Errors:**
+   - When a user makes a valid selection from the dropdown, any existing error for that field is cleared.
+
+### 3. **Handle Form Submission**
+
+In your form submission handler (likely via AJAX), you should check the response from the server for validation errors. If errors are found, pass them to the plugin to display:
+
+```javascript
+$(document).ready(function () {
+
+    $('#submitForm').on('click', function (e) {
+        e.preventDefault();
+
+        // Send form data to the server
+        $.ajax({
+            url: '/submit',  // Your Spring Boot URL
+            type: 'POST',
+            data: $('#yourForm').serialize(),  // Serialize form data
+            success: function (response) {
+                if (response.success) {
+                    alert('Form submitted successfully!');
+                } else {
+                    // Handle validation errors
+                    $('#custom-field-container1').customDatalist({
+                        containerId: '#custom-field-container1',
+                        label: 'User:',
+                        inputId: 'inputDropDownCombo1',
+                        dropDownId: 'dropDownData1',
+                        textPlaceholder: 'Enter text or select an option',
+                        dropdownOptions: ['Admin', 'User', 'Guest', 'Developer', 'Manager'],
+                        validationErrors: response.errors  // Pass validation errors here
+                    });
+
+                    $('#custom-field-container2').customDatalist({
+                        containerId: '#custom-field-container2',
+                        label: 'Fruit:',
+                        inputId: 'inputDropDownCombo2',
+                        dropDownId: 'dropDownData2',
+                        textPlaceholder: 'Enter text or select an option',
+                        dropdownOptions: ['Apple', 'Pear', 'Grape', 'Cherry', 'Banana'],
+                        validationErrors: response.errors  // Pass validation errors here
+                    });
+                }
+            },
+            error: function () {
+                alert('Error while submitting form.');
+            }
+        });
+    });
+
+});
+```
+
+### 4. **Modify the Spring Controller (for JSON Responses)**
+
+You’ll need to ensure your Spring controller can return validation errors in a JSON format:
+
+```java
+@PostMapping("/submit")
+@ResponseBody
+public ResponseEntity<?> handleFormSubmit(@Valid @ModelAttribute UserInputDTO userInputDTO, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+        Map<String, String> errors = new HashMap<>();
+        bindingResult.getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        return ResponseEntity.ok(Collections.singletonMap("errors", errors));
+    }
+    // Return success response if no errors
+    return ResponseEntity.ok(Collections.singletonMap("success", true));
+}
+```
+
+### Conclusion
+
+By making these modifications, you now have a jQuery plugin that can handle validation error messages returned from your Spring Boot backend. It dynamically displays validation errors when necessary and clears them as the user interacts with the form. This combination of server-side validation (Spring Boot) and client-side handling (jQuery) ensures a smooth user experience.
+
+--------------------------------------------------------------------------------------------------------------------------
+Here's the full working example with the modified jQuery plugin that integrates with traditional form submission and Thymeleaf validation.
+
+### 1. **Thymeleaf Template (`inputForm.html`)**:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Input Form with Dropdown</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/inputDropDownComb.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Input with Dropdown on Click (Simulates Datalist)</h2>
+
+    <!-- Form Submission -->
+    <form th:action="@{/submitForm}" th:object="${userInputDTO}" method="post">
+        
+        <!-- Custom Input with Dropdown for User -->
+        <div id="custom-field-container1" class="custom-input-group">
+            <!-- The jQuery plugin will generate the input and dropdown here -->
+        </div>
+        <!-- Display validation error for userName -->
+        <div th:if="${#fields.hasErrors('userName')}" class="text-danger">
+            <p th:errors="*{userName}">Username error</p>
+        </div>
+
+        <!-- Custom Input with Dropdown for Fruit -->
+        <div id="custom-field-container2" class="custom-input-group">
+            <!-- The jQuery plugin will generate the input and dropdown here -->
+        </div>
+        <!-- Display validation error for fruit -->
+        <div th:if="${#fields.hasErrors('fruit')}" class="text-danger">
+            <p th:errors="*{fruit}">Fruit selection error</p>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<!-- Load jQuery and your custom script -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/inputDropDownComb.js}"></script>
+
+<script>
+    // Attach jQuery custom plugin to the placeholders
+    $(document).ready(function () {
+
+        // Initialize the first custom input with dropdown for "user"
+        $('#custom-field-container1').customDatalist({
+            containerId: '#custom-field-container1',
+            label: 'User:',
+            inputId: 'userName',   // This matches the field in the DTO
+            dropDownId: 'dropDownData1',
+            textPlaceholder: 'Enter text or select an option',
+            dropdownOptions: ['Admin', 'User', 'Guest', 'Developer', 'Manager'],
+            onValueChange: function (data) {
+                console.log('Selected value for User:', data.text);
+            }
+        });
+
+        // Initialize the second custom input with dropdown for "fruit"
+        $('#custom-field-container2').customDatalist({
+            containerId: '#custom-field-container2',
+            label: 'Fruit:',
+            inputId: 'fruit',   // This matches the field in the DTO
+            dropDownId: 'dropDownData2',
+            textPlaceholder: 'Enter text or select an option',
+            dropdownOptions: ['Apple', 'Pear', 'Grape', 'Cherry', 'Banana'],
+            onValueChange: function (data) {
+                console.log('Selected value for Fruit:', data.text);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+```
+
+### 2. **Modified jQuery Plugin (`inputDropDownComb.js`)**:
+
+Here is the modified jQuery plugin that supports server-side validation by ensuring the selected value gets submitted with the form.
+
+```javascript
+(function ($) {
+    $.fn.customDatalist = function (options) {
+        // Default settings
+        var settings = $.extend({
+            label: 'Label',
+            textPlaceholder: 'Enter or select',
+            dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
+            inputId: '',  // Added inputId to bind to form field
+            dropDownId: '',
+            onValueChange: function (data) {
+                console.log(data);
+            }
+        }, options);
+
+        // Create the label
+        var label = $('<label for="' + settings.inputId + '" class="col-form-label">' + settings.label + '</label>');
+
+        // Create the input group
+        var inputGroup = $('<div class="input-group"></div>');
+
+        // Create the input field
+        var textInput = $('<input type="text" class="form-control custom-input" placeholder="' + settings.textPlaceholder + '" autocomplete="off" id="' + settings.inputId + '" name="' + settings.inputId + '">');
+
+        // Create the dropdown button
+        var dropdownButton = $('<div class="input-group-append"><span class="dropdown-arrow">&#9660;</span></div>');
+
+        // Create the dropdown menu
+        var dropdownMenu = $('<div class="dropdown-menu w-100" id=' + settings.dropDownId + '></div>');
+
+        // Append dropdown options to the dropdownMenu
+        settings.dropdownOptions.forEach(function (option) {
+            dropdownMenu.append('<a class="dropdown-item" href="#">' + option + '</a>');
+        });
+
+        // Append label, input, dropdown arrow, and dropdown menu to the container
+        inputGroup.append(textInput).append(dropdownButton);
+        this.append(label).append(inputGroup).append(dropdownMenu);
+
+        // Show all options whenever the input is clicked
+        textInput.on('click', function () {
+            dropdownMenu.children('a').show();  // Ensure all options are visible
+            dropdownMenu.addClass('show');      // Show the dropdown
+        });
+
+        // Handle selecting an option from the dropdown
+        dropdownMenu.on('click', 'a', function (e) {
+            e.preventDefault();  // Ignore default link behavior
+            var selectedOption = $(this).text();
+            textInput.val(selectedOption);  // Set the input value to the selected option
+            dropdownMenu.removeClass('show');  // Hide the dropdown after selection
+
+            // Call the onValueChange callback with the selected option
+            settings.onValueChange({
+                text: selectedOption
+            });
+        });
+
+        // Hide dropdown if clicked outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest(settings.containerId).length) {
+                dropdownMenu.removeClass('show');
+            }
+        });
+
+        // Maintain chainability
+        return this;
+    };
+}(jQuery));
+```
+
+### 3. **Spring Boot Controller (`UserController.java`)**:
+
+This is the Spring Boot controller that handles the form submission, validation, and returning the form with validation errors if they occur.
+
+```java
+@Controller
+public class UserController {
+
+    // Display form
+    @GetMapping("/showForm")
+    public String showForm(Model model) {
+        // Initialize empty form object
+        model.addAttribute("userInputDTO", new UserInputDTO());
+        return "inputForm";
+    }
+
+    // Handle form submission
+    @PostMapping("/submitForm")
+    public String submitForm(
+            @Valid @ModelAttribute("userInputDTO") UserInputDTO userInputDTO,
+            BindingResult bindingResult,
+            Model model) {
+
+        // If there are validation errors, return to the same form
+        if (bindingResult.hasErrors()) {
+            return "inputForm";  // Return to form page with errors
+        }
+
+        // If no validation errors, process the form (e.g., save to database)
+        return "redirect:/formSuccess";
+    }
+}
+```
+
+### 4. **DTO for Form Data and Validation (`UserInputDTO.java`)**:
+
+This DTO contains the form fields along with validation annotations.
+
+```java
+public class UserInputDTO {
+
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String userName;
+
+    @NotBlank(message = "Please select a fruit")
+    private String fruit;
+
+    // Getters and Setters
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFruit() {
+        return fruit;
+    }
+
+    public void setFruit(String fruit) {
+        this.fruit = fruit;
+    }
+}
+```
+
+### 5. **Stylesheet (`inputDropDownComb.css`)**:
+
+The CSS styles for the input and dropdown component.
+
+```css
+.custom-input-group {
+    margin-bottom: 20px;
+}
+
+.custom-input {
+    width: 100%;
+}
+
+.dropdown-arrow {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+```
+
+### How It Works:
+
+1. **Form Submission**: When the user selects an option from the dropdown, the value is placed in the hidden input field.
+2. **Server-Side Validation**: The form is submitted traditionally to the server, where the Spring Boot controller performs validation.
+3. **Error Feedback**: If there are validation errors (e.g., no option selected), the form is returned with error messages displayed near the corresponding input fields.
+4. **Thymeleaf Integration**: Thymeleaf binds the form fields to the `UserInputDTO` object, ensuring the selected values are sent correctly and validation errors are displayed.
+
+With this setup, you can use the traditional form submission method while still using your custom jQuery plugin for the input and dropdown functionality.
+

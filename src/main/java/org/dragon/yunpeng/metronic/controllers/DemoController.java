@@ -486,6 +486,12 @@ public class DemoController {
 
 		return "pages/samplePage";
 	}
+	
+	@GetMapping("/forms/jsTreePage")
+	public String jsTreePage(Model model, HttpServletRequest request) {
+
+		return "pages/jsTreePage";
+	}
 
 	@GetMapping("/forms/ajaxFormSubmissionValidation")
 	public String ajaxFormSubmissionValidationPage(Model model) {
